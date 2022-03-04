@@ -1,54 +1,18 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="index.css">
-   
-    <title>Index</title>
-</head>
-<body>
-    <div>
-   <label for="input-file">Specify a file:</label><br>
- <input type="file" id="input-file">
-</div>
-<textarea id="content-target"></textarea>
- <script src="index.js"></script>
-</body>
-
-</html> -->
-
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-    
-    <script type="text/javascript">(function(w,s){var e=document.createElement("script");e.type="text/javascript";e.async=true;e.src="https://zohotagmanager.cdn.pagesense.io/ztmjs/0a792777671e4c4fbd61acf546ea9c77.js";var x=document.getElementsByTagName("script")[0];x.parentNode.insertBefore(e,x);})(window,"script");</script>
-    
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <link rel="canonical" href="https://www.site24x7.com/tools/sql-to-mongodb.html" />
     <title>
-            SQL to MongoDB Converter: Site24x7 Tools
+            MySQL to MongoDB Converter
         </title>
-        <meta name="description" content="Online free tool to convert SQL queries into MongoDB queries. Try now!">
-        <meta name="keywords" content="SQL to MongoDB converter, MongoDB generator, SQL to MongoDB transformer">
-    <link rel="SHORTCUT ICON" href="https://img.site24x7static.com/images/site24x7-fav.ico?p=Feb_25_2022_1">
-    <!-- <link href="https://webfonts.zoho.com/css?family=Lato:400,700" rel="stylesheet"> -->
     <link rel="stylesheet" href="https://css.site24x7static.com/css/bootstrap4.min.css?p=Feb_25_2022_1"
           type="text/css"/>
     <link rel="stylesheet" href="https://css.site24x7static.com/css/new-style.css?p=Feb_25_2022_1" type="text/css"/>
-
-
     <link rel="stylesheet" href="//js-wc.site24x7static.com/site24x7/client/4800025/js/toastr.min.css" type="text/css"/>
-        <link rel="stylesheet" href="//css-wc.site24x7static.com/site24x7/client/4800025/css/alltoolsv2.css" type="text/css"/>
+    <link rel="stylesheet" href="//css-wc.site24x7static.com/site24x7/client/4800025/css/alltoolsv2.css" type="text/css"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-    <style type="text/css">
-    .nav-link-color.selected {
-        color: #83b633!important
-    }
-        </style>
+    <link rel="stylesheet" href="index.css">
 
 </head>
 <body>
@@ -71,15 +35,15 @@
     
         <div class="container py-4">
             <h1>MySQL Query to MongoDB Query Converter</h1>
-            <p >Free tool to convert SQL queries used in MySQL, Oracle, Postgresql or SQL server  into MongoDB - NoSQL query format. Handy tool for people who are used to structured database queries and are newly learning MongoDB. Options to browse and load the input sql query and download the output mongodb query are also provided.</p>
+            <p >A tool that translates MySQL queries into NoSQL queries. The tool will be a web page with a text box to type queries to be converted. Users can also upload files that they want to convert from MySQL to NoSQL.</p>
             <div class="mb-3">
                 <div class="row">
                     <div class="col-12 col-sm-12 col-lg-6 mb-3 mb-lg-0">
                         <div class="form-group">
-                            <label for="fileinput">Input</label>
-                            <input class="form-control-sm p-0" type="file" id="fileinput" accept="application/ini"/>
+                            <label for="input-file">Input</label>
+                            <input class="form-control-sm p-0" type="file" id="input-file" accept="application/ini"/>
                             <div id="result" class="alert alert-danger" style="display: none;"></div>
-                            <textarea class="form-control" id="icontainer" rows="10" placeholder="Paste your JSON here."></textarea>
+                            <textarea id="content-target" placeholder="Paste your MySQL Query here or Upload Query File."></textarea>></textarea>
                         </div>
                         <button id="convert" class="btn btn-green-s247 rounded-0" > Convert </button>
                         <button id="inputclear" class="btn btn-green-s247 rounded-0" title=Clear Input > Clear </button>
@@ -99,6 +63,20 @@
         </div>
     
 </div>
-
+  <footer>
+        <div class="bottom-container">
+          <a
+            class="footer-link"
+            href="https://twitter.com/iit_tirupati?s=20"
+          >
+            Twitter
+          </a>
+          <a class="footer-link" href="https://iittp.ac.in/">
+            Website
+          </a>
+          <p class="copyright">© 2021 IIT Tirupati</p>
+        </div>
+      </footer>
+       <script src="index.js"></script>
 </body>
 </html>
