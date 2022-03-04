@@ -1,0 +1,26 @@
+label 
+{
+  cursor: pointer;
+}
+
+textarea {
+  width: 450px;
+  height: 423px;
+}
+ .nav-link-color.selected 
+    {
+        color: #14c9d6!important
+    }
+    .bottom-container {
+  background: linear-gradient(to left, #14c9d6, #14c9d6);
+  padding: 50px 0 20px;
+  text-align: center;
+}
+.copyright {
+  color: #eaf6f6;
+  font-size: 0.75rem;
+  padding: 20px 0;
+}
+.footer-link {
+  padding: 5px;
+}
