@@ -44,7 +44,7 @@
                             <div id="result" class="alert alert-danger" style="display: none;"></div>
                             <textarea id="content-target" placeholder="Paste your MySQL Query here or Upload Query File."></textarea></textarea>
                         </div>
-                        <button id="convert" class="btn btn-green-s247 rounded-0" > Convert </button>
+                        <button id="convert" class="btn btn-green-s247 rounded-0" onclick="convert()"> Convert </button>
                         <button id="inputclear" onclick="document.getElementById('content-target').value = ''"  class="btn btn-green-s247 rounded-0" title=Clear Input > Clear </button>
                     </div>
 
@@ -54,7 +54,7 @@
                             <textarea id="ocontainer" class="form-control" rows="10" readonly="true"></textarea>
                         </div>
                         <button id="savebtn" class="btn btn-green-s247 rounded-0" title=Download output to file> Download<a id="dload" style="display:none"></a> </button>
-                        <button id="copybtn" class="btn btn-green-s247 rounded-0" title=Copy to Clipboard > Copy </button>
+                        <button id="copybtn" class="btn btn-green-s247 rounded-0" onclick="copy()" title=Copy to Clipboard > Copy </button>
 
                     </div>
                 </div>
