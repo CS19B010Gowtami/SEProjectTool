@@ -1,0 +1,9 @@
+label 
+{
+  cursor: pointer;
+}
+
+textarea {
+  width: 400px;
+  height: 150px;
+}
