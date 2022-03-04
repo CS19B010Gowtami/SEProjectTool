@@ -25,3 +25,11 @@ function readFileContent(file)
     reader.readAsText(file)
   })
 }
+
+function copy()
+{
+  var copyText = document.getElementById("ocontainer");
+  copyText.select();
+  copyText.setSelectionRange(0, 99999); 
+  navigator.clipboard.writeText(copyText.value);
+}
