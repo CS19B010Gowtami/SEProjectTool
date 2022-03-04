@@ -33,3 +33,8 @@ function copy()
   copyText.setSelectionRange(0, 99999); 
   navigator.clipboard.writeText(copyText.value);
 }
+
+function clear()
+{
+  document.getElementById("content-target").value = '';
+}
