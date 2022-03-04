@@ -29,12 +29,23 @@
             </div>
         </div>
     </header>
+    <!-- <div class="container-fluid">
+      <nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+      <ul class="nav navbar-nav">
+        <li><a id="len1" class="hoverable" href="#">Home</a></li>
+        <li><a id="len2" class="hoverable" href="#">About</a></li>
+        <li><a id="len3" class="hoverable" href="#">Portfolio</a></li>
+        <li><a id="len4" class="hoverable" href="#">Contact</a></li>
+      </ul>
+    </div>
+  </nav></div> -->
 
 <div id="temp-body">
     
         <div class="container py-4">
             <h1>MySQL Query to MongoDB Query Converter</h1>
-            <p >A tool that translates MySQL queries into NoSQL queries. The tool will be a web page with a text box to type queries to be converted. Users can also upload files that they want to convert from MySQL to NoSQL.</p>
+            <p class="intro">A tool that translates MySQL queries into NoSQL queries. The tool will be a web page with a text box to type queries to be converted. Users can also upload files that they want to convert from MySQL to NoSQL.</p>
             <div class="mb-3">
                 <div class="row">
                     <div class="col-12 col-sm-12 col-lg-6 mb-3 mb-lg-0">
@@ -44,8 +55,8 @@
                             <div id="result" class="alert alert-danger" style="display: none;"></div>
                             <textarea id="content-target" placeholder="Paste your MySQL Query here or Upload Query File."></textarea></textarea>
                         </div>
-                        <button id="convert" class="btn btn-green-s247 rounded-0" onclick="convert()"> Convert </button>
-                        <button id="inputclear" onclick="document.getElementById('content-target').value = ''"  class="btn btn-green-s247 rounded-0" title=Clear Input > Clear </button>
+                        <button id="convert" class="btn btn-green-s247 rounded-0 glow-on-hover" onclick="convert()"> Convert </button>
+                        <button id="inputclear" onclick="document.getElementById('content-target').value = ''"  class="btn btn-green-s247 rounded-0 glow-on-hover" title=Clear Input > Clear </button>
                     </div>
 
                     <div class="col-12 col-sm-12 col-lg-6">
@@ -53,8 +64,8 @@
                             <label for="ocontainer">Output</label>
                             <textarea id="ocontainer" class="form-control" rows="10" readonly="true"></textarea>
                         </div>
-                        <button id="savebtn" class="btn btn-green-s247 rounded-0" title=Download output to file> Download<a id="dload" style="display:none"></a> </button>
-                        <button id="copybtn" class="btn btn-green-s247 rounded-0" onclick="copy()" title=Copy to Clipboard > Copy </button>
+                        <button id="savebtn" class="btn btn-green-s247 rounded-0 glow-on-hover" title=Download output to file> Download<a id="dload" style="display:none"></a> </button>
+                        <button id="copybtn" class="btn btn-green-s247 rounded-0 glow-on-hover" onclick="copy()" title=Copy to Clipboard > Copy </button>
 
                     </div>
                 </div>
