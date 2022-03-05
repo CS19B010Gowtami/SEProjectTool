@@ -41,3 +41,27 @@ function convert()
 {
     document.getElementById('ocontainer').innerHTML = document.getElementById('content-target').value;
 }
+function downloadFile(filename, content) 
+{
+ const element = document.createElement('a');
+  const blob = new Blob([content], { type: 'plain/text' });
+  const fileUrl = URL.createObjectURL(blob);
+  element.setAttribute('href', fileUrl); 
+  element.setAttribute('download', filename); 
+  element.style.display = 'none';
+  document.body.appendChild(element);
+  element.click();
+  document.body.removeChild(element);
+};
+
+//   window.onload = () => {
+//   document.getElementById('savebtn').
+//   addEventListener('click', e => {
+//   const filename = "query_converted.json";
+//   const content = document.getElementById('ocontainer').value;
+//    if (filename && content) 
+//    {
+//       downloadFile(filename, content);
+//     }
+//   });
+// };
