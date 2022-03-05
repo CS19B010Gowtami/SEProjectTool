@@ -31,29 +31,12 @@ function copy() {
   navigator.clipboard.writeText(copyText.value)
 }
 
-function clear() {
-  document.getElementById('content-target').value = ''
+function clear_all() 
+{
+  document.getElementById('content-target').value='';
 }
 
-$(function(){
-  var str = '#len'; //increment by 1 up to 1-nelemnts
-  $(document).ready(function(){
-    var i, stop;
-    i = 1;
-    stop = 4; //num elements
-    setInterval(function(){
-      if (i > stop){
-        return;
-      }
-      $('#len'+(i++)).toggleClass('bounce');
-    }, 500)
-  });
-});
-function toggleMobileMenu(menu) {
-  menu.classList.toggle('open');
-}
 
-// document.getElementById('convert').addEventListener('click',convert);
 function convert()
 {
     document.getElementById('ocontainer').innerHTML = document.getElementById('content-target').value;
