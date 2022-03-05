@@ -17,18 +17,30 @@
 
 </head>
 <body>
-<header class="nav-sticky">
-        <div class="nav-header shadow-sm">
-            <div class="nav-header-wrap">
-                <nav class="navbar navbar-expand-lg navbar-toggleable-md navbar-light navbar-height">
-                    <div class="navbar-brand-width">
-                            <span class="S1PPyQ" style="font-weight: 700; font-style: bold; color: rgb(197, 33, 33); text-decoration: none; font-size: 35px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SE Tool</span>
-                        
-                    </div>
-                </nav>
-            </div>
-        </div>
-    </header>
+  <header>
+    <div id="brand"><a href="/">MongoDB Converter</a></div>
+    <nav>
+      <ul>
+        <li><a href="/home">Home</a></li>
+        <li><a href="/About">About</a></li>
+        <li><a href="/Contact">Contact</a></li>
+        <li id="login"><a href="/login">Login</a></li>
+        <li id="signup"><a href="/signup">Signup</a></li>
+      </ul>
+    </nav>
+    <div id="hamburger-icon" onclick="toggleMobileMenu(this)">
+      <div class="bar1"></div>
+      <div class="bar2"></div>
+      <div class="bar3"></div>
+      <ul class="mobile-menu">
+        <li><a href="/home">Home</a></li>
+        <li><a href="/About">About</a></li>
+        <li><a href="/Contact">Contact</a></li>
+        <li id="login"><a href="/login">Login</a></li>
+        <li id="signup"><a href="/signup">Signup</a></li>
+      </ul>
+    </div>
+  </header>
     <!-- <div class="container-fluid">
       <nav class="navbar navbar-inverse">
     <div class="container-fluid">
