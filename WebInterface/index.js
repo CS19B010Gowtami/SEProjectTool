@@ -54,14 +54,14 @@ function downloadFile(filename, content)
   document.body.removeChild(element);
 };
 
-//   window.onload = () => {
-//   document.getElementById('savebtn').
-//   addEventListener('click', e => {
-//   const filename = "query_converted.json";
-//   const content = document.getElementById('ocontainer').value;
-//    if (filename && content) 
-//    {
-//       downloadFile(filename, content);
-//     }
-//   });
-// };
+  window.onload = () => {
+  document.getElementById('savebtn').
+  addEventListener('click', e => {
+  const filename = "query_converted.json";
+  const content = document.getElementById('ocontainer').value;
+   if (filename && content) 
+   {
+      downloadFile(filename, content);
+    }
+  });
+};
