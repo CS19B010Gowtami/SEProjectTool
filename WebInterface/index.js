@@ -53,7 +53,8 @@ function toggleMobileMenu(menu) {
   menu.classList.toggle('open');
 }
 
-document.getElementById('convert').addEventListener('click',convert);
-function convert(){
-document.getElementById('ocontainer').innerHTML = document.getElementById('content-target').value;
-   }
+// document.getElementById('convert').addEventListener('click',convert);
+function convert()
+{
+    document.getElementById('ocontainer').innerHTML = document.getElementById('content-target').value;
+}
