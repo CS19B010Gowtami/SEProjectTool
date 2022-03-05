@@ -31,29 +31,37 @@ function copy() {
   navigator.clipboard.writeText(copyText.value)
 }
 
-function clear() {
-  document.getElementById('content-target').value = ''
+function clear_all() 
+{
+  document.getElementById('content-target').value='';
 }
 
-$(function(){
-  var str = '#len'; //increment by 1 up to 1-nelemnts
-  $(document).ready(function(){
-    var i, stop;
-    i = 1;
-    stop = 4; //num elements
-    setInterval(function(){
-      if (i > stop){
-        return;
-      }
-      $('#len'+(i++)).toggleClass('bounce');
-    }, 500)
+
+function convert()
+{
+    document.getElementById('ocontainer').innerHTML = document.getElementById('content-target').value;
+}
+function downloadFile(filename, content) 
+{
+ const element = document.createElement('a');
+  const blob = new Blob([content], { type: 'json' });
+  const fileUrl = URL.createObjectURL(blob);
+  element.setAttribute('href', fileUrl); 
+  element.setAttribute('download', filename); 
+  element.style.display = 'none';
+  document.body.appendChild(element);
+  element.click();
+  document.body.removeChild(element);
+};
+
+  window.onload = () => {
+  document.getElementById('savebtn').
+  addEventListener('click', e => {
+  const filename = "query_converted.json";
+  const content = document.getElementById('ocontainer').value;
+   if (filename && content) 
+   {
+      downloadFile(filename, content);
+    }
   });
-});
-function toggleMobileMenu(menu) {
-  menu.classList.toggle('open');
-}
-
-document.getElementById('convert').addEventListener('click',convert);
-function convert(){
-document.getElementById('ocontainer').innerHTML = document.getElementById('content-target').value;
-   }
+};
