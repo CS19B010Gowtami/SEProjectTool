@@ -44,7 +44,7 @@ function convert()
 function downloadFile(filename, content) 
 {
  const element = document.createElement('a');
-  const blob = new Blob([content], { type: 'plain/text' });
+  const blob = new Blob([content], { type: 'json' });
   const fileUrl = URL.createObjectURL(blob);
   element.setAttribute('href', fileUrl); 
   element.setAttribute('download', filename); 
