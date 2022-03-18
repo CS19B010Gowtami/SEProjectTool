@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>
+            MySQL to MongoDB Converter
+        </title>
+    <link rel="stylesheet" href="https://css.site24x7static.com/css/bootstrap4.min.css?p=Feb_25_2022_1"
+          type="text/css"/>
+    <link rel="stylesheet" href="https://css.site24x7static.com/css/new-style.css?p=Feb_25_2022_1" type="text/css"/>
+    <link rel="stylesheet" href="//js-wc.site24x7static.com/site24x7/client/4800025/js/toastr.min.css" type="text/css"/>
+    <link rel="stylesheet" href="//css-wc.site24x7static.com/site24x7/client/4800025/css/alltoolsv2.css" type="text/css"/>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<!--    <link rel="stylesheet" href="index.css">-->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script type = "text/javascript" src="index.js"></script>
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap");
+
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        header a {
+            text-decoration: none;
+        }
+
+        header {
+            padding: 0 20px;
+            background-color: #1d1f1d;
+            height: 50px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #brand {
+            font-weight: bold;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+        }
+
+        #brand a {
+            color: #09c372;
+        }
+
+        ul {
+            list-style: none;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        ul a {
+            color: white;
+        }
+
+        ul li {
+            padding: 5px;
+            /* background-color: #353836; */
+            margin-left: 10px;
+        }
+
+        ul li:hover {
+            transform: scale(1.1);
+            transition: 0.3s;
+            /* border-color: #09c372; */
+        }
+
+        #login,
+        #signup {
+            border-radius: 5px;
+            padding: 5px 8px;
+        }
+
+        #login {
+            border: 1px solid #498afb;
+        }
+
+        #signup {
+            border: 1px solid #ff3860;
+        }
+
+        #signup a {
+            color: #ff3860;
+        }
+
+        #login a {
+            color: #498afb;
+        }
+
+        #hamburger-icon {
+            margin: auto 0;
+            display: none;
+            cursor: pointer;
+        }
+
+        #hamburger-icon div {
+            width: 35px;
+            height: 3px;
+            background-color: white;
+            margin: 6px 0;
+            transition: 0.4s;
+        }
+
+        .open .bar1 {
+            -webkit-transform: rotate(-45deg) translate(-6px, 6px);
+            transform: rotate(-45deg) translate(-6px, 6px);
+        }
+
+        .open .bar2 {
+            opacity: 0;
+        }
+
+        .open .bar3 {
+            -webkit-transform: rotate(45deg) translate(-6px, -8px);
+            transform: rotate(45deg) translate(-6px, -8px);
+        }
+
+        .open .mobile-menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .mobile-menu {
+            display: none;
+            position: absolute;
+            top: 50px;
+            left: 0;
+            height: calc(100vh - 50px);
+            width: 100%;
+        }
+
+        .mobile-menu li {
+            /* margin-bottom: 10px; */
+            background-color: #1d1f1d;
+            width: 100%;
+            height: 50px;
+            text-align: center;
+        }
+
+        @media only screen and (max-width: 600px) {
+            header nav {
+                display: none;
+            }
+
+            #hamburger-icon {
+                display: block;
+            }
+        }
+        label{
+            cursor: pointer;
+        }
+
+        textarea {
+            width: 450px;
+            height: 423px;
+        }
+        .nav-link-color.selected{
+            color: #14c9d6!important
+        }
+        .bottom-container {
+            background: linear-gradient(to left, #14c9d6, #14c9d6);
+            padding: 50px 0 20px;
+            text-align: center;
+        }
+        .copyright {
+            color: #eaf6f6;
+            font-size: 0.75rem;
+            padding: 20px 0;
+        }
+        .footer-link {
+            padding: 5px;
+        }
+
+        .glow-on-hover {
+            width: 150px;
+            height: 40px;
+            border: none;
+            outline: none;
+            color: #fff;
+            background: #111;
+            cursor: pointer;
+            position: relative;
+            z-index: 0;
+            border-radius: 10px;
+        }
+
+        .glow-on-hover:before {
+            content: '';
+            background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+            position: absolute;
+            top: -2px;
+            left:-2px;
+            background-size: 400%;
+            z-index: -1;
+            filter: blur(5px);
+            width: calc(100% + 4px);
+            height: calc(100% + 4px);
+            animation: glowing 20s linear infinite;
+            opacity: 0;
+            transition: opacity .3s ease-in-out;
+            border-radius: 10px;
+        }
+
+        .glow-on-hover:active {
+            color: #000
+        }
+
+        .glow-on-hover:active:after {
+            background: transparent;
+        }
+
+        .glow-on-hover:hover:before {
+            opacity: 1;
+        }
+
+        .glow-on-hover:after {
+            z-index: -1;
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #111;
+            left: 0;
+            top: 0;
+            border-radius: 10px;
+        }
+
+        @keyframes glowing {
+            0% { background-position: 0 0; }
+            50% { background-position: 400% 0; }
+            100% { background-position: 0 0; }
+        }
+
+
+    </style>
+</head>
+<body>
+  <header>
+    <div id="brand"><a href="/">MongoDB Converter</a></div>
+    <nav>
+      <ul>
+        <li><a href="/home">Home</a></li>
+        <li><a href="/About">About</a></li>
+        <li><a href="/Contact">Contact</a></li>
+        <li id="login"><a href="/login">Login</a></li>
+        <li id="signup"><a href="/signup">Signup</a></li>
+      </ul>
+    </nav>
+    <div id="hamburger-icon" onclick="toggleMobileMenu(this)">
+      <div class="bar1"></div>
+      <div class="bar2"></div>
+      <div class="bar3"></div>
+      <ul class="mobile-menu">
+        <li><a href="/home">Home</a></li>
+        <li><a href="/About">About</a></li>
+        <li><a href="/Contact">Contact</a></li>
+        <li id="login"><a href="/login">Login</a></li>
+        <li id="signup"><a href="/signup">Signup</a></li>
+      </ul>
+    </div>
+  </header>
+
+<div id="temp-body">
+
+        <div class="container py-4">
+            <h1>MySQL Query to MongoDB Query Converter</h1>
+            <p class="intro">A tool that translates MySQL queries into NoSQL queries. The tool will be a web page with a text box to type queries to be converted. Users can also upload files that they want to convert from MySQL to NoSQL.</p>
+            <div class="mb-3">
+                <div class="row">
+                    <form action="/converter/result/" method="post" class="col-12 col-sm-12 col-lg-6 mb-3 mb-lg-0">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="input-file">Input</label>
+                            <input class="form-control-sm p-0" type="file" id="input-file" accept="application/ini"/>
+                            <div id="result" class="alert alert-danger" style="display: none;"></div>
+                            <textarea id="content-target" placeholder="Paste your MySQL Query here or Upload Query File." name="inputTT"></textarea></textarea>
+                        </div>
+                        <!-- <button id="convert" class="btn btn-green-s247 rounded-0 glow-on-hover" onclick="convert()"> Convert </button> -->
+                        <button id="convert" onclick="convert()" class="btn btn-green-s247 rounded-0 glow-on-hover" type="submit"> Convert </button>
+                        <button id="inputclear" onclick="clear_all()"  class="btn btn-green-s247 rounded-0 glow-on-hover" title=Clear Input > Clear </button>
+                    </form>
+
+                    <div class="col-12 col-sm-12 col-lg-6">
+                        <div class="form-group">
+                            <label for="ocontainer">Output</label>
+                            <textarea id="ocontainer" class="form-control" rows="10" readonly="true"></textarea>
+                        </div>
+                        <button id="savebtn" class="btn btn-green-s247 rounded-0 glow-on-hover" title=Download output to file> Download<a id="dload" style="display:none" ></a> </button>
+                        <button id="copybtn" class="btn btn-green-s247 rounded-0 glow-on-hover" onclick="copy()" title=Copy to Clipboard > Copy </button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</div>
+  <footer>
+        <div class="bottom-container">
+          <a
+            class="footer-link"
+            href="https://twitter.com/iit_tirupati?s=20"
+          >
+            Twitter
+          </a>
+          <a class="footer-link" href="https://iittp.ac.in/">
+            Website
+          </a>
+          <p class="copyright">© 2021 IIT Tirupati</p>
+        </div>
+      </footer>
+       <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.9.1/axios.js'></script>
+
+    <script>
+        document.getElementById("input-file").addEventListener("change", getFile);
+
+        function getFile(event) {
+            const input = event.target;
+            if ("files" in input && input.files.length > 0) {
+                placeFileContent(document.getElementById("content-target"), input.files[0]);
+            }
+        }
+
+        function placeFileContent(target, file) {
+        readFileContent(file)
+            .then((content) => {
+            target.value = content;
+            })
+            .catch((error) => console.log(error));
+        }
+
+        function readFileContent(file) {
+            const reader = new FileReader();
+            return new Promise((resolve, reject) => {
+                reader.onload = (event) => resolve(event.target.result);
+                reader.onerror = (error) => reject(error);
+                reader.readAsText(file);
+            });
+        }
+
+        function copy() {
+            var copyText = document.getElementById("ocontainer");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(copyText.value);
+        }
+
+        function clear_all() {
+            document.getElementById("content-target").value = "";
+        }
+
+        function toggleMobileMenu(menu) {
+            menu.classList.toggle("open");
+        }
+
+        document.getElementById("convert").addEventListener("click", convert);
+
+        function convert() {
+
+        document.getElementById("ocontainer").innerHTML =
+        document.getElementById("content-target").value;
+        }
+
+        function downloadFile(filename, content) {
+            const element = document.createElement("a");
+            const blob = new Blob([content], { type: "json" });
+            const fileUrl = URL.createObjectURL(blob);
+            element.setAttribute("href", fileUrl);
+            element.setAttribute("download", filename);
+            element.style.display = "none";
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
+        window.onload = () => {
+            document.getElementById("savebtn").addEventListener("click", (e) => {
+                const filename = "query_converted.json";
+                const content = document.getElementById("ocontainer").value;
+                if (filename && content) {
+                    downloadFile(filename, content);
+                }
+            });
+        };
+
+    </script>
+</body>
+
+
+</html>
