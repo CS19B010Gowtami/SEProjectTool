@@ -278,23 +278,23 @@
             <p class="intro">A tool that translates MySQL queries into NoSQL queries. The tool will be a web page with a text box to type queries to be converted. Users can also upload files that they want to convert from MySQL to NoSQL.</p>
             <div class="mb-3">
                 <div class="row">
-                    <form action="/converter/result/" method="post" class="col-12 col-sm-12 col-lg-6 mb-3 mb-lg-0">
+                    <form action="" method="post" class="col-12 col-sm-12 col-lg-6 mb-3 mb-lg-0">
                         {% csrf_token %}
                         <div class="form-group">
                             <label for="input-file">Input</label>
                             <input class="form-control-sm p-0" type="file" id="input-file" accept="application/ini"/>
                             <div id="result" class="alert alert-danger" style="display: none;"></div>
-                            <textarea id="content-target" placeholder="Paste your MySQL Query here or Upload Query File." name="inputTT"></textarea></textarea>
+                            <textarea id="content-target" placeholder="Paste your MySQL Query here or Upload Query File." name="query">{{querystr}}</textarea></textarea>
                         </div>
                         <!-- <button id="convert" class="btn btn-green-s247 rounded-0 glow-on-hover" onclick="convert()"> Convert </button> -->
-                        <button id="convert" onclick="convert()" class="btn btn-green-s247 rounded-0 glow-on-hover" type="submit"> Convert </button>
-                        <button id="inputclear" onclick="clear_all()"  class="btn btn-green-s247 rounded-0 glow-on-hover" title=Clear Input > Clear </button>
+                        <button id="convert" class="btn btn-green-s247 rounded-0 glow-on-hover" type="submit"> Convert </button>
+                        <button id="inputclear" name='clear' class="btn btn-green-s247 rounded-0 glow-on-hover" title=Clear Input > Clear </button>
                     </form>
 
                     <div class="col-12 col-sm-12 col-lg-6">
                         <div class="form-group">
                             <label for="ocontainer">Output</label>
-                            <textarea id="ocontainer" class="form-control" rows="10" readonly="true"></textarea>
+                            <textarea id="ocontainer" class="form-control" rows="10" readonly="true">{{value}}</textarea>
                         </div>
                         <button id="savebtn" class="btn btn-green-s247 rounded-0 glow-on-hover" title=Download output to file> Download<a id="dload" style="display:none" ></a> </button>
                         <button id="copybtn" class="btn btn-green-s247 rounded-0 glow-on-hover" onclick="copy()" title=Copy to Clipboard > Copy </button>
