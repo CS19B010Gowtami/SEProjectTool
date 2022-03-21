@@ -1,209 +1,222 @@
-from ast import keyword
-import ply.lex as lex
+from sly import lexer
 
-# DROP, USE and SHOW are not required ig
-# if both lower case and uppercase are allowed for keywords we need to be map 'add' to 'ADD' ; 'constraint' to 'CONSTRAINT' etc
-keywords = {
-	'ADD'  :  'ADD',
-	'CONSTRAINT'  :  'CONSTRAINT',
-    'ALTER'  :  'ALTER',
-	'COLUMN'  :  'COLUMN',
-	'TABLE'  :  'TABLE',
-	'AS'  :  'AS',
-	'ASC'  :  'ASC',
-	'BACKUP'  :  'BACKUP',
-	'DATABASE'  :  'DATABASE',
-	'CASE'  :  'CASE',
-	'CHECK'  :  'CHECK',
-	'CREATE'  :  'CREATE',
-	'INDEX'  :  'INDEX',
-	'REPLACE'  :  'REPLACE',
-	'VIEW'  :  'VIEW',
-	'PROCEDURE'  :  'PROCEDURE',
-	'UNIQUE'  :  'UNIQUE',
-	'DEFAULT'  :  'DEFAULT',
-	'DELETE'  :  'DELETE',
-	'DESC'  :  'DESC',
-	'DISTINCT'  :  'DISTINCT',
-	'DROP'  :  'DROP',
-	'USE'  :  'USE',
-	'SHOW'  :  'SHOW',
-	'EXEC'  :  'EXEC',
-	'FOREIGN'  :  'FOREIGN',
-	'KEY'  :  'KEY',
-	'FROM'  :  'FROM',
-	'FULL'  :  'FULL',
-	'OUTER'  :  'OUTER',
-	'JOIN'  :  'JOIN',
-	'GROUP'  :  'GROUP',
-	'BY'  :  'BY',
-	'HAVING'  :  'HAVING',
-	'INNER'  :  'INNER',
-	'INSERT'  :  'INSERT',
-	'INTO'  :  'INTO',
-	'SELECT'  :  'SELECT',
-	'NULL'  :  'NULL',
-	'IS'  :  'IS',
-	'LEFT'  :  'LEFT',
-	'LIMIT'  :  'LIMIT',
-	'ORDER'  :  'ORDER',
-	'PRIMARY'  :  'PRIMARY',
-	'RIGHT'  :  'RIGHT',
-	'ROWNUM'  :  'ROWNUM',
-	'TOP'  :  'TOP',
-	'SET'  :  'SET',
-	'TRUNCATE'  :  'TRUNCATE',
-	'UNION'  :  'UNION',
-	'UPDATE'  :  'UPDATE',
-	'VALUES'  :  'VALUES',
-	'WHERE'  :  'WHERE',
-	'VARCHAR' : 'VARCHAR',
+class MyLexer(Lexer):
+    # these are set of tokens that are to be exported to the parser
+   tokens = {
+            REALNUM,
+			INTNUM,
+			STRING,
+			CHARACTER,
+		IDENTIFIER,
+			EQUAL,
+			ADDEQ,
+			SUBEQ,
+			MULEQ,
+			DIVEQ,
+			MODEQ,
+			GTEQ,
+			LTEQ,
+			NOTEQ,
+			ANDEQ,
+			OREQ,
+			EXLUSIVE_EQ,
+			SUBOP,
+			MULOP,
+			DIVOP,
+			MODOP,
+			GTOP,
+			LTOP,
+			ANDOP,
+			OROP,
+			EXLUSIVE_OP,
+			SEPARATORS,
+			SEMICOLON,
+			LCB,
+			RCB,
+			LFB,
+			RFB,
+			LSB,
+			RSB
+		}
 
-	'ALL'  :  'ALL',
-	'AND'  :  'AND',
-	'ANY'  :  'ANY',
-	'BETWEEN'  :  'BETWEEN',
-	'EXISTS'  :  'EXISTS',
-	'IN'  :  'IN',
-	'LIKE'  :  'LIKE',
-	'NOT'  :  'NOT',
-	'OR'  :  'OR',
-	'SOME'  :  'SOME'
-}
+@_(r'\d+')
+def INTNUM(self, t):
+    t.value = int(t.value)
+    return t
 
-tokens = [
-	'REALNUM',
-	'INTNUM',
-	'STRING',
-	'CHARACTER',
-	'IDENTIFIER',
-	'EQUAL',
-	'ADDEQ',
-	'SUBEQ',
-	'MULEQ',
-	'DIVEQ',
-	'MODEQ',
-	'GTEQ',
-	'LTEQ',
-	'NOTEQ',
-	'ANDEQ',
-	'OREQ',
-	'EXLUSIVE_EQ',
-	'ADDOP',
-	'SUBOP',
-	'MULOP',
-	'DIVOP',
-	'MODOP',
-	'GTOP',
-	'LTOP',
-	'ANDOP',
-	'OROP',
-	'EXLUSIVE_OP',
-	'SEPARATORS',
-	'SEMICOLON',
-	'LCB',
-	'RCB',
-	'LFB',
-	'RFB',
-	'LSB',
-	'RSB'
-] + list(keywords.values())
+@_(r'\d+.\d+')
+def REALNUM(self, t):
+    t.value = float(t.value)
+    return t
 
-t_EQUAL = r'\='
+ # Identifiers and keywords
+ID = r'[a-zA-Z_][a-zA-Z0-9_]*'
+ID['ADD']  =  ADD
+ID['CONSTRAINT']  = CONSTRAINT
+ID['ALTER']  =  ALTER
+ID['COLUMN']  =  COLUMN
+ID['TABLE']  = TABLE
+ID['AS']  =  AS
+ID['ASC']  = ASC
+ID['BACKUP']  =  BACKUP
+ID['DATABASE']  =  DATABASE
+ID['CASE']  =  CASE
+ID['CHECK']  =  CHECK
+ID['CREATE']  =  CREATE
+ID['INDEX']  =  INDEX
+ID['REPLACE'] = REPLACE
+ID['VIEW'] = VIEW
+ID['PROCEDURE'] = PROCEDURE
+ID['UNIQUE'] = UNIQUE
+ID['DEFAULT'] = DEFAULT
+ID['DELETE'] = DELETE
+ID['DESC'] = DESC
+ID['DISTINCT'] = DISTINCT
+ID['DROP'] = DROP
+ID['USE'] = USE
+ID['SHOW'] = SHOW
+ID['EXEC'] = EXEC
+ID['FOREIGN'] = FOREIGN
+ID['KEY'] = KEY
+ID['FROM'] = FROM
+ID['FULL'] = FULL
+ID['OUTER'] = OUTER
+ID['JOIN'] = JOIN
+ID['GROUP'] = GROUP
+ID['BY'] = BY
+ID['HAVING'] = HAVING
+ID['INNER'] = INNER
+ID['INSERT'] = INSERT
+ID['INTO'] = INTO
+ID['SELECT'] = SELECT
+ID['NULL'] = NULL
+ID['IS'] = IS
+ID['LEFT'] = LEFT
+ID['LIMIT'] = LIMIT
+ID['ORDER'] = ORDER
+ID['PRIMARY'] = PRIMARY
+ID['RIGHT'] = RIGHT
+ID['ROWNUM'] = ROWNUM
+ID['TOP'] = TOP
+ID['SET'] = SET
+ID['TRUNCATE'] = TRUNCATE
+ID['UNION'] = UNION
+ID['UPDATE'] = UPDATE
+ID['VALUES'] = VALUES
+ID['WHERE'] = WHERE
+ID['VARCHAR'] = VARCHAR
+ID['ALL'] = ALL
+ID['AND'] = AND
+ID['ANY'] = ANY
+ID['BETWEEN'] = BETWEEN
+ID['EXISTS'] = EXISTS
+ID['IN'] = IN
+ID['LIKE'] = LIKE
+ID['NOT'] = NOT
+ID['OR'] = OR
+ID['SOME'] = SOME
+
+EQUAL = r'\='
 
 # Arithmetic Assignment Operators
-t_ADDEQ = r'\+\='
-t_SUBEQ = r'\-\='
-t_MULEQ = r'\*\='
-t_DIVEQ = r'\/\='
-t_MODEQ = r'\%\='
+ADDEQ = r'\+\='
+SUBEQ = r'\-\='
+MULEQ = r'\*\='
+DIVEQ = r'\/\='
+MODEQ = r'\%\='
 
 # Comparison Operators
-t_GTEQ = r'\>\='
-t_LTEQ = r'\<\='
-t_NOTEQ = r'\<\>'
+GTEQ = r'\>\='
+LTEQ = r'\<\='
+NOTEQ = r'\<\>'
 
 # Bitwise Assignment Operators
-t_ANDEQ = r'\&\='
-t_OREQ = r'\|\='
-t_EXLUSIVE_EQ = r'\^\='
+ANDEQ = r'\&\='
+OREQ = r'\|\='
+EXLUSIVE_EQ = r'\^\='
 
 # Arithmetic Operators
-t_ADDOP = r'\+'
-t_SUBOP = r'\-'
-t_MULOP = r'\*'
-t_DIVOP = r'\/'
-t_MODOP = r'\%'
+ADDOP = r'\+'
+SUBOP = r'\-'
+MULOP = r'\*'
+DIVOP = r'\/'
+MODOP = r'\%'
 
 # Comparison Operators
-t_GTOP = r'\>'
-t_LTOP = r'\<'
+GTOP = r'\>'
+LTOP = r'\<'
 
 # Bitwise Operators
-t_ANDOP = r'\&'
-t_OROP = r'\|'
-t_EXLUSIVE_OP = r'\^'
+ANDOP = r'\&'
+OROP = r'\|'
+EXLUSIVE_OP = r'\^'
 
-t_SEPARATORS = r'\,'
-t_SEMICOLON = r'\;'
-t_LCB = r'\('
-t_RCB = r'\)'
-t_LFB = r'\{'
-t_RFB = r'\}'
-t_LSB = r'\['
-t_RSB = r'\]'
+SEPARATORS = r'\,'
+SEMICOLON = r'\;'
+LCB = r'\('
+RCB = r'\)'
+LFB = r'\{'
+RFB = r'\}'
+LSB = r'\['
+RSB = r'\]'
 
-t_ignore = r' |\\\t'
+ignore = '\t'
 
 # Identifier refers to table name, attribute name etc
-def t_IDENTIFIER(t):
-	r'[a-zA-Z]+'
-	t.type = keywords.get(t.value, 'IDENTIFIER')
-	return t
+# @_(r'[a-zA-Z]+')
+# def IDENTIFIER(self, t):
+# 	t.type = .get(t.value, 'IDENTIFIER')
+# 	return t
 
 # String refers to attribute value which may be composed of a character(s)
-def t_STRING(t):
-	r'\'(\s|\S)+\''
-	l = len(t.value)
-	t.value = t.value[1:(l-1)]
-	try:
-		t.value = int(t.value)
-		t.type = 'INTNUM'
-	except ValueError:
-		t.value = float(t.value)
-		t.type = 'REALNUM'
-	finally:
-		t.type = 'STRING'	
-	return t
+# def STRING(t=
+# 	r'\'(\s|\S)+\''
+# 	l = len(t.value)
+# 	t.value = t.value[=(l-1)]
+# 	tr=
+# 		t.value = int(t.value)
+# 		t.type = 'INTNUM'
+# 	except ValueErro=
+# 		t.value = float(t.value)
+# 		t.type = 'REALNUM'
+# 	finall=
+# 		t.type = 'STRING'	
+# 	return t
 
-def t_REALNUM(t):
-	r'\d+.\d+'
+# def NUMBER(self, t):
+#         t.value = int(t.value)
+#         return t
+
+@_(r'''("[^"\\]*(\\.[^"\\]*)*"|'[^'\\]*(\\.[^'\\]*)*')''')
+def STRING(self, t):
+    t.value = self.remove_quotes(t.value)
+    return t
+
+@_(r'\d+.\d+')
+def REALNUM(self, t):
 	t.value = float(t.value)
 	return t
-
-def t_INTNUM(t):
-	r'\d+'
+@_(r'\d+')
+def INTNUM(self, t):
 	t.value = int(t.value)
 	return t
 
-def t_error(t):
-    print("Illegal character '%s'" %t.value[0])
-    t.lexer.skip(1)
+ignore_comment = r'\#.*'
 
-# Updating line number for the tokens
-def t_newline(t):
-	r'\n+'
-	t.lexer.lineno += len(t.value)
+    # Line number tracking
+@_(r'\n+')
+def ignore_newline(self, t):
+    self.lineno += t.value.count('\n')
 
-lexer = lex.lex()
-test = '''
+def error(self, t):
+    print('Line %d: Bad character %r' % (self.lineno, t.value[0]))
+    self.index += 1
 
+if __name__ == '__main__':
+    data = '''
+WHILE count <= 10
+HAVING CREATE AS 
 '''
-
-lexer.input(test)
-# tok consists of attributes tok.type, tok.value, tok.lineno, and tok.lexpos
-while True:
-	tok = lexer.token()
-	if not tok:
-		break
-	print(tok)
+    lexer = MyLexer()
+    for tok in lexer.tokenize(data):
+        print(tok)
