@@ -6,6 +6,8 @@ class MyLexer(Lexer):
     tokens = {
             "REALNUM",
 			"INTNUM",
+            "COL_NAME",
+            "TABLE_NAME",
 			"STRING",
 			"CHARACTER",
 		    "IDENTIFIER",
@@ -37,7 +39,7 @@ class MyLexer(Lexer):
 			"LFB",
 			"RFB",
 			"LSB",
-			"RSB","UPDATE", "BACKUP", "FROM", "DISTINCT", "LIMIT", "ORDER", "ADD", "DATABASE", "BETWEEN", "ASC", "CASE", "EXISTS", "AND", "TRUNCATE", "PROCEDURE", "WHERE", "VALUES", "ALL", "HAVING", "LIKE", "EXEC", "CONSTRAINT", "COLUMN", "DEFAULT", "ROWNUM", "REPLACE", "IS", "SET", "LEFT", "AS", "FULL", "ALTER", "RIGHT", "GROUP", "INTO", "SHOW", "ANY", "NULL", "BY", "INSERT", "SELECT", "NOT", "TABLE", "KEY", "USE", "TOP", "UNION", "INNER", "CHECK", "JOIN", "FOREIGN", "PRIMARY", "IN", "UNIQUE", "VIEW", "DELETE", "OUTER", "VARCHAR", "OR", "INDEX", "DROP", "CREATE", "SOME", "DESC"
+			"RSB","UPDATE", "BACKUP", "FROM", "DISTINCT", "LIMIT", "ORDER", "ADD", "DATABASE", "BETWEEN", "ASC", "CASE", "EXISTS", "AND", "TRUNCATE", "PROCEDURE", "WHERE", "VALUES", "ALL", "HAVING", "LIKE", "EXEC", "CONSTRAINT", "COLUMN", "DEFAULT", "ROWNUM", "REPLACE", "IS", "SET", "LEFT", "AS", "FULL", "ALTER", "RIGHT", "GROUP", "INTO", "SHOW", "ANY", "NULL", "BY", "INSERT", "SELECT", "NOT", "TABLE", "KEY", "USE", "TOP", "UNION", "INNER", "CHECK", "JOIN", "FOREIGN", "PRIMARY", "IN", "UNIQUE", "VIEW", "DELETE", "OUTER", "VARCHAR", "OR", "INDEX", "DROP", "CREATE", "SOME", "DESC","BOOL"
 		}
 
     # Identifiers and keywords
@@ -108,6 +110,7 @@ class MyLexer(Lexer):
     ID['OR'] = OR
     ID['SOME'] = SOME
 
+
     EQUAL = r'\='
 
     # Arithmetic Assignment Operators
@@ -152,7 +155,27 @@ class MyLexer(Lexer):
     LSB = r'\['
     RSB = r'\]'
 
+
     ignore = '\t'
+    @_(r'[A-Za-z][A-Za-z0-9_]*')
+    def NAME(self,t):
+        return t
+
+
+    @_('TRUE')
+    def BOOL(self,t):
+        t.value=1
+        return t
+
+    @_('FALSE')
+    def BOOL(self,t):
+        t.value=0
+        return t
+
+    @_('UNKNOWN')
+    def BOOL(self,t):
+        t.value=-1
+        return t
 
     @_(r'\d+')
     def INTNUM(self, t):
