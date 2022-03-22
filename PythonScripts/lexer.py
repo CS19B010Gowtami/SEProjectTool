@@ -6,6 +6,8 @@ class MyLexer(Lexer):
     tokens = {
             "REALNUM",
 			"INTNUM",
+            "COL_NAME",
+            "TABLE_NAME",
 			"STRING",
 			"CHARACTER",
 		    "IDENTIFIER",
@@ -109,6 +111,7 @@ class MyLexer(Lexer):
     ID['OR'] = OR
     ID['SOME'] = SOME
 
+
     EQUAL = r'\='
     NAMES = r'[a-zA-Z_]*'
     COMMA = r'\,'
@@ -154,7 +157,27 @@ class MyLexer(Lexer):
     LSB = r'\['
     RSB = r'\]'
 
+
     ignore = '\t'
+    @_(r'[A-Za-z][A-Za-z0-9_]*')
+    def NAME(self,t):
+        return t
+
+
+    @_('TRUE')
+    def BOOL(self,t):
+        t.value=1
+        return t
+
+    @_('FALSE')
+    def BOOL(self,t):
+        t.value=0
+        return t
+
+    @_('UNKNOWN')
+    def BOOL(self,t):
+        t.value=-
+        return t
 
     @_(r'\d+')
     def INTNUM(self, t):
