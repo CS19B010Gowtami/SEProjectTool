@@ -37,7 +37,7 @@ class MyLexer(Lexer):
 			"LFB",
 			"RFB",
 			"LSB",
-			"RSB"
+			"RSB","UPDATE", "BACKUP", "FROM", "DISTINCT", "LIMIT", "ORDER", "ADD", "DATABASE", "BETWEEN", "ASC", "CASE", "EXISTS", "AND", "TRUNCATE", "PROCEDURE", "WHERE", "VALUES", "ALL", "HAVING", "LIKE", "EXEC", "CONSTRAINT", "COLUMN", "DEFAULT", "ROWNUM", "REPLACE", "IS", "SET", "LEFT", "AS", "FULL", "ALTER", "RIGHT", "GROUP", "INTO", "SHOW", "ANY", "NULL", "BY", "INSERT", "SELECT", "NOT", "TABLE", "KEY", "USE", "TOP", "UNION", "INNER", "CHECK", "JOIN", "FOREIGN", "PRIMARY", "IN", "UNIQUE", "VIEW", "DELETE", "OUTER", "VARCHAR", "OR", "INDEX", "DROP", "CREATE", "SOME", "DESC"
 		}
 
     # Identifiers and keywords
@@ -154,30 +154,6 @@ class MyLexer(Lexer):
 
     ignore = '\t'
 
-# Identifier refers to table name, attribute name etc
-# @_(r'[a-zA-Z]+')
-# def IDENTIFIER(self, t):
-# 	t.type = .get(t.value, 'IDENTIFIER')
-# 	return t
-
-# String refers to attribute value which may be composed of a character(s)
-# def STRING(t=
-# 	r'\'(\s|\S)+\''
-# 	l = len(t.value)
-# 	t.value = t.value[=(l-1)]
-# 	tr=
-# 		t.value = int(t.value)
-# 		t.type = 'INTNUM'
-# 	except ValueErro=
-# 		t.value = float(t.value)
-# 		t.type = 'REALNUM'
-# 	finall=
-# 		t.type = 'STRING'	
-# 	return t
-
-# def NUMBER(self, t):
-#         t.value = int(t.value)
-#         return t
     @_(r'\d+')
     def INTNUM(self, t):
      t.value = int(t.value)
@@ -185,33 +161,33 @@ class MyLexer(Lexer):
 
     @_(r'\d+.\d+')
     def REALNUM(self, t):
-	 t.value = float(t.value)
-	 return t
+        t.value = float(t.value)
+        return t
 
     @_(r'''("[^"\\]*(\\.[^"\\]*)*"|'[^'\\]*(\\.[^'\\]*)*')''')
     def STRING(self, t):
-	 t.value = self.remove_quotes(t.value)
-	 return t
+        t.value = self.remove_quotes(t.value)
+        return t
 
-@_(r'\d+.\d+')
-def REALNUM(self, t):
-	t.value = float(t.value)
-	return t
-@_(r'\d+')
-def INTNUM(self, t):
-	t.value = int(t.value)
-	return t
+    @_(r'\d+.\d+')
+    def REALNUM(self, t):
+        t.value = float(t.value)
+        return t
+    @_(r'\d+')
+    def INTNUM(self, t):
+        t.value = int(t.value)
+        return t
 
-ignore_comment = r'\#.*'
+    ignore_comment = r'\#.*'
 
 	# Line number tracking
-@_(r'\n+')
-def ignore_newline(self, t):
-	self.lineno += t.value.count('\n')
+    @_(r'\n+')
+    def ignore_newline(self, t):
+        self.lineno += t.value.count('\n')
 
-def error(self, t):
-	print('Line %d: Bad character %r' % (self.lineno, t.value[0]))
-	self.index += 1
+    def error(self, t):
+        print('Line %d: Bad character %r' % (self.lineno, t.value[0]))
+        self.index += 1
 
 if __name__ == '__main__':
 	data = '''
