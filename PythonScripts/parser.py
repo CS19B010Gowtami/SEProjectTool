@@ -3,10 +3,17 @@ from basic_sly_lexer import MyLexer
 class MyParser(Parser):
     tokens = MyLexer.tokens
 
-# Grammar rules and actions
-    # @_('SELECT names FROM names SEMICOLON')
-    # def select(self, p):
-    #     return p.expr + p.term
+    @_("stmt SEMICOLON")
+    def stmt_list(self,p):
+        return
+    
+    @_("stmt_list stmt SEMICOLON")
+    def stmt_list(self,p):
+        return
+
+    @_("NAME")
+    def expr(self,p):
+        return 
 
 if __name__ == '__main__':
     lexer = MyLexer()
