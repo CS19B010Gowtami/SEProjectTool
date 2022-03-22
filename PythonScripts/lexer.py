@@ -37,6 +37,7 @@ class MyLexer(Lexer):
 			"LFB",
 			"RFB",
 			"LSB",
+            "NAMES"
 			"RSB","UPDATE", "BACKUP", "FROM", "DISTINCT", "LIMIT", "ORDER", "ADD", "DATABASE", "BETWEEN", "ASC", "CASE", "EXISTS", "AND", "TRUNCATE", "PROCEDURE", "WHERE", "VALUES", "ALL", "HAVING", "LIKE", "EXEC", "CONSTRAINT", "COLUMN", "DEFAULT", "ROWNUM", "REPLACE", "IS", "SET", "LEFT", "AS", "FULL", "ALTER", "RIGHT", "GROUP", "INTO", "SHOW", "ANY", "NULL", "BY", "INSERT", "SELECT", "NOT", "TABLE", "KEY", "USE", "TOP", "UNION", "INNER", "CHECK", "JOIN", "FOREIGN", "PRIMARY", "IN", "UNIQUE", "VIEW", "DELETE", "OUTER", "VARCHAR", "OR", "INDEX", "DROP", "CREATE", "SOME", "DESC"
 		}
 
@@ -109,7 +110,8 @@ class MyLexer(Lexer):
     ID['SOME'] = SOME
 
     EQUAL = r'\='
-
+    NAMES = r'[a-zA-Z_]*'
+    COMMA = r'\,'
     # Arithmetic Assignment Operators
     ADDEQ = r'\+\='
     SUBEQ = r'\-\='
