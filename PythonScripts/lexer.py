@@ -44,70 +44,71 @@ class MyLexer(Lexer):
 
     # Identifiers and keywords
     ID = r'[a-zA-Z_][a-zA-Z0-9_]*'
-    ADD = r'ADD'
-    CONSTRAINT = r'CONSTRAINT'  
-    ALTER = r'ALTER'   
-    COLUMN = r'COLUMN'  
-    TABLE = r'TABLE' 
-    AS = r'AS' 
-    ASC = r'ASC' 
-    BACKUP = r'BACKUP'  
-    DATABASE = r'DATABASE' 
-    CASE = r'CASE'  
-    CHECK = r'CHECK' 
-    CREATE = r'CREATE'  
-    INDEX = r'INDEX'  
-    REPLACE = r'REPLACE'
-    VIEW = r'VIEW'
-    PROCEDURE = r'PROCEDURE'
-    UNIQUE = r'UNIQUE'
-    DEFAULT = r'DEFAULT'
-    DELETE = r'DELETE'
-    DESC = r'DESC'
-    DISTINCT = r'DISTINCT'
-    DROP = r'DROP'
-    USE = r'USE'
-    SHOW = r'SHOW'
-    EXEC = r'EXEC'
-    FOREIGN = r'FOREIGN'
-    KEY = r'KEY'
-    FROM = r'FROM'
-    FULL = r'FULL'
-    OUTER = r'OUTER'
-    JOIN = r'JOIN'
-    GROUP = r'GROUP'
-    BY = r'BY'
-    HAVING = r'HAVING'
-    INNER = r'INNER'
-    INSERT = r'INSERT'
-    INTO = r'INTO'
-    SELECT = r'SELECT'
-    NULL = r'NULL'
-    IS = r'IS'
-    LEFT = r'LEFT'
-    LIMIT = r'LIMIT'
-    ORDER = r'ORDER'
-    PRIMARY = r'PRIMARY'
-    RIGHT = r'RIGHT'
-    ROWNUM = r'ROWNUM'
-    TOP = r'TOP'
-    SET = r'SET'
-    TRUNCATE = r'TRUNCATE'
-    UNION = r'UNION'
-    UPDATE = r'UPDATE'
-    VALUES = r'VALUES'
-    WHERE = r'WHERE'
-    VARCHAR = r'VARCHAR'
-    ALL = r'ALL'
-    AND = r'AND'
-    ANY = r'ANY'
-    BETWEEN = r'BETWEEN'
-    EXISTS = r'EXISTS'
-    IN = r'IN'
-    LIKE = r'LIKE'
-    NOT = r'NOT'
-    OR = r'OR'
-    SOME = r'SOME'
+
+    ID['ADD']  =  ADD
+    ID['CONSTRAINT']  = CONSTRAINT
+    ID['ALTER']  =  ALTER
+    ID['COLUMN']  =  COLUMN
+    ID['TABLE']  = TABLE
+    ID['AS']  =  AS
+    ID['ASC']  = ASC
+    ID['BACKUP']  =  BACKUP
+    ID['DATABASE']  =  DATABASE
+    ID['CASE']  =  CASE
+    ID['CHECK']  =  CHECK
+    ID['CREATE']  =  CREATE
+    ID['INDEX']  =  INDEX
+    ID['REPLACE'] = REPLACE
+    ID['VIEW'] = VIEW
+    ID['PROCEDURE'] = PROCEDURE
+    ID['UNIQUE'] = UNIQUE
+    ID['DEFAULT'] = DEFAULT
+    ID['DELETE'] = DELETE
+    ID['DESC'] = DESC
+    ID['DISTINCT'] = DISTINCT
+    ID['DROP'] = DROP
+    ID['USE'] = USE
+    ID['SHOW'] = SHOW
+    ID['EXEC'] = EXEC
+    ID['FOREIGN'] = FOREIGN
+    ID['KEY'] = KEY
+    ID['FROM'] = FROM
+    ID['FULL'] = FULL
+    ID['OUTER'] = OUTER
+    ID['JOIN'] = JOIN
+    ID['GROUP'] = GROUP
+    ID['BY'] = BY
+    ID['HAVING'] = HAVING
+    ID['INNER'] = INNER
+    ID['INSERT'] = INSERT
+    ID['INTO'] = INTO
+    ID['SELECT'] = SELECT
+    ID['NULL'] = NULL
+    ID['IS'] = IS
+    ID['LEFT'] = LEFT
+    ID['LIMIT'] = LIMIT
+    ID['ORDER'] = ORDER
+    ID['PRIMARY'] = PRIMARY
+    ID['RIGHT'] = RIGHT
+    ID['ROWNUM'] = ROWNUM
+    ID['TOP'] = TOP
+    ID['SET'] = SET
+    ID['TRUNCATE'] = TRUNCATE
+    ID['UNION'] = UNION
+    ID['UPDATE'] = UPDATE
+    ID['VALUES'] = VALUES
+    ID['WHERE'] = WHERE
+    ID['VARCHAR'] = VARCHAR
+    ID['ALL'] = ALL
+    ID['AND'] = AND
+    ID['ANY'] = ANY
+    ID['BETWEEN'] = BETWEEN
+    ID['EXISTS'] = EXISTS
+    ID['IN'] = IN
+    ID['LIKE'] = LIKE
+    ID['NOT'] = NOT
+    ID['OR'] = OR
+    ID['SOME'] = SOME
 
 
     EQUAL = r'\='
@@ -173,7 +174,7 @@ class MyLexer(Lexer):
 
     @_('UNKNOWN')
     def BOOL(self,t):
-        t.value=-1
+        t.value=-
         return t
 
     @_(r'\d+')
