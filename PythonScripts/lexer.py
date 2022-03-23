@@ -40,6 +40,8 @@ class MyLexer(Lexer):
 			"RFB",
 			"LSB",
             "NAMES"
+            "NUMS"
+            "RELOP"
 			"RSB","UPDATE", "BACKUP", "FROM", "DISTINCT", "LIMIT", "ORDER", "ADD", "DATABASE", "BETWEEN", "ASC", "CASE", "EXISTS", "AND", "TRUNCATE", "PROCEDURE", "WHERE", "VALUES", "ALL", "HAVING", "LIKE", "EXEC", "CONSTRAINT", "COLUMN", "DEFAULT", "ROWNUM", "REPLACE", "IS", "SET", "LEFT", "AS", "FULL", "ALTER", "RIGHT", "GROUP", "INTO", "SHOW", "ANY", "NULL", "BY", "INSERT", "SELECT", "NOT", "TABLE", "KEY", "USE", "TOP", "UNION", "INNER", "CHECK", "JOIN", "FOREIGN", "PRIMARY", "IN", "UNIQUE", "VIEW", "DELETE", "OUTER", "VARCHAR", "OR", "INDEX", "DROP", "CREATE", "SOME", "DESC"
 		}
 
@@ -113,7 +115,6 @@ class MyLexer(Lexer):
 
 
     EQUAL = r'\='
-    NAMES = r'[a-zA-Z_]*'
     COMMA = r'\,'
     # Arithmetic Assignment Operators
     ADDEQ = r'\+\='
@@ -121,7 +122,7 @@ class MyLexer(Lexer):
     MULEQ = r'\*\='
     DIVEQ = r'\/\='
     MODEQ = r'\%\='
-
+    
     # Comparison Operators
     GTEQ = r'\>\='
     LTEQ = r'\<\='
@@ -138,6 +139,8 @@ class MyLexer(Lexer):
     MULOP = r'\*'
     DIVOP = r'\/'
     MODOP = r'\%'
+    
+
 
     # Comparison Operators
     GTOP = r'\>'
@@ -160,10 +163,18 @@ class MyLexer(Lexer):
 
     ignore = '\t'
     @_(r'[A-Za-z][A-Za-z0-9_]*')
-    def NAME(self,t):
+    def ID(self,t):
+        return t
+    
+    @_(r'\|')
+    def OPOP(self, t):
+        return t
+    
+    @_(r'''('\>'|'\<'|'\>='|'\<='|'\<\>'|'\=')''')
+    def RELOP(self, t):
         return t
 
-
+    
     @_('TRUE')
     def BOOL(self,t):
         t.value=1
@@ -188,20 +199,15 @@ class MyLexer(Lexer):
     def REALNUM(self, t):
         t.value = float(t.value)
         return t
-
+    @_(r'''('\d+'|'\\d+.\d+')''')
+    def NUMS(self, t):
+        return t
+        
     @_(r'''("[^"\\]*(\\.[^"\\]*)*"|'[^'\\]*(\\.[^'\\]*)*')''')
     def STRING(self, t):
         t.value = self.remove_quotes(t.value)
         return t
 
-    @_(r'\d+.\d+')
-    def REALNUM(self, t):
-        t.value = float(t.value)
-        return t
-    @_(r'\d+')
-    def INTNUM(self, t):
-        t.value = int(t.value)
-        return t
 
     ignore_comment = r'\#.*'
 
