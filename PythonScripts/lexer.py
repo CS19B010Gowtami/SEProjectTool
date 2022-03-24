@@ -39,14 +39,14 @@ class MyLexer(Lexer):
 			"LFB",
 			"RFB",
 			"LSB",
-            "NAMES"
-            "NUMS"
-            "RELOP"
-			"RSB","UPDATE", "BACKUP", "FROM", "DISTINCT", "LIMIT", "ORDER", "ADD", "DATABASE", "BETWEEN", "ASC", "CASE", "EXISTS", "AND", "TRUNCATE", "PROCEDURE", "WHERE", "VALUES", "ALL", "HAVING", "LIKE", "EXEC", "CONSTRAINT", "COLUMN", "DEFAULT", "ROWNUM", "REPLACE", "IS", "SET", "LEFT", "AS", "FULL", "ALTER", "RIGHT", "GROUP", "INTO", "SHOW", "ANY", "NULL", "BY", "INSERT", "SELECT", "NOT", "TABLE", "KEY", "USE", "TOP", "UNION", "INNER", "CHECK", "JOIN", "FOREIGN", "PRIMARY", "IN", "UNIQUE", "VIEW", "DELETE", "OUTER", "VARCHAR", "OR", "INDEX", "DROP", "CREATE", "SOME", "DESC"
+            "NAMES",
+            "NUMS",
+            "RELOP",
+			"RSB","UPDATE", "BACKUP", "FROM", "DISTINCT", "LIMIT", "ORDER", "ADD", "DATABASE", "BETWEEN", "ASC", "CASE", "EXISTS", "AND", "TRUNCATE", "PROCEDURE", "WHERE", "VALUES", "ALL", "HAVING", "LIKE", "EXEC", "CONSTRAINT", "COLUMN", "DEFAULT", "ROWNUM", "REPLACE", "IS", "SET", "LEFT", "AS", "FULL", "ALTER", "RIGHT", "GROUP", "INTO", "SHOW", "ANY", "NULL", "BY", "INSERT", "SELECT", "NOT", "TABLE", "KEY", "USE", "TOP", "UNION", "INNER", "CHECK", "JOIN", "FOREIGN", "PRIMARY", "IN", "UNIQUE", "VIEW", "DELETE", "OUTER", "VARCHAR", "OR", "INDEX", "DROP", "CREATE", "SOME", "DESC","COMMA","ADDOP"
 		}
 
     # Identifiers and keywords
-    ID = r'[a-zA-Z_][a-zA-Z0-9_]*'
+
 
     ID['ADD']  =  ADD
     ID['CONSTRAINT']  = CONSTRAINT
@@ -160,8 +160,8 @@ class MyLexer(Lexer):
     LSB = r'\['
     RSB = r'\]'
 
-
-    ignore = '\t'
+    ID = r'[a-zA-Z_][a-zA-Z0-9_]*'
+    ignore = r'[\t ] '
     @_(r'[A-Za-z][A-Za-z0-9_]*')
     def ID(self,t):
         return t
@@ -187,7 +187,7 @@ class MyLexer(Lexer):
 
     @_('UNKNOWN')
     def BOOL(self,t):
-        t.value=-
+        t.value= -1
         return t
 
     @_(r'\d+')
