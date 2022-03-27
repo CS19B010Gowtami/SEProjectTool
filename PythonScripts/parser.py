@@ -1,5 +1,7 @@
 from sly import Parser
 from lexer import MyLexer
+
+
 class MyParser(Parser):
     tokens = MyLexer.tokens
 
@@ -33,6 +35,9 @@ class MyParser(Parser):
     def query(self,p):
         return
 
+    @_('')
+    def empty(self, p):
+        pass
 
     @_('empty')
     def query(self,p):
