@@ -4,6 +4,7 @@ class MyLexer(Lexer):
 
     # these are set of tokens that are to be exported to the parser
     tokens = {
+
         "REALNUM",
         "INTNUM",
         "COL_NAME",
@@ -225,6 +226,7 @@ class MyLexer(Lexer):
     LSB = r'\['
     RSB = r'\]'
 
+
     INTNUM = r'\d+'
     REALNUM = r'\d+.\d+'
     STRING = r'\'(\s|\S)+\''
@@ -245,6 +247,7 @@ class MyLexer(Lexer):
         t.value=0
         return t
 
+
     # @_('UNKNOWN')
     # def BOOL(self,t):
     #     t.value=-
@@ -257,6 +260,7 @@ class MyLexer(Lexer):
     def REALNUM(self, t):
         t.value = float(t.value)
         return t
+
     
     # @_(r'''('\d+'|'\\d+.\d+')''')
     # def NUMS(self, t):
