@@ -92,20 +92,13 @@ class MyParser(Parser):
     @_('conds OR cond','conds AND cond','NOT cond','cond')
     def conds(self, p):
         return 
-        
-    # @_('conds AND cond')
-    # def conds(self, p):
-    #     return
-    # @_('NOT cond')
-    # def conds(self, p):
-    #     return 
-    # @_('cond')
-    # def conds(self, p):
-    #     return
 
-    # @_('cond')
-    # def cond(self, p):
-    #     return p.cond
+    @_('cond')
+    def conds(self, p):
+        return p.cond
+    @_('cond')
+    def cond(self, p):
+        return p.cond
     
     @_('ID EQUAL NUMS','ID GTEQ NUMS','ID LTEQ NUMS','ID GTOP NUMS','ID LTOP NUMS','ID NOTEQ NUMS')
     def cond(self, p):
