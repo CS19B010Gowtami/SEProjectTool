@@ -25,7 +25,7 @@ class MyParser(Parser):
     @_('cond')
     def conds(self, p):
         return p.cond
-     @_('cond')
+    @_('cond')
     def cond(self, p):
         return p.cond
     
