@@ -4,7 +4,6 @@ class MyLexer(Lexer):
 
     # these are set of tokens that are to be exported to the parser
     tokens = {
-
         "REALNUM",
         "INTNUM",
         "COL_NAME",
@@ -24,6 +23,7 @@ class MyLexer(Lexer):
         "ANDEQ",
         "OREQ",
         "XOREQ",
+        "ADDOP",
         "SUBOP",
         "MULOP",
         "DIVOP",
@@ -35,6 +35,7 @@ class MyLexer(Lexer):
         "XOROP",
         "SEPARATORS",
         "SEMICOLON",
+        "COMMA",
         "LCB",
         "RCB",
         "LFB",
@@ -109,8 +110,7 @@ class MyLexer(Lexer):
         "SOME",
         "DESC",
         "BOOL",
-        "COMMA",
-        "ADDOP"
+        "OFFSET"
 	}
 
     # Identifiers and keywords
@@ -180,6 +180,7 @@ class MyLexer(Lexer):
     IDENTIFIER['NOT'] = NOT
     IDENTIFIER['OR'] = OR
     IDENTIFIER['SOME'] = SOME
+    IDENTIFIER['OFFSET'] = OFFSET
 
     EQUAL = r'\='
     COMMA = r'\,'
