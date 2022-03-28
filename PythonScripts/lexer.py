@@ -232,7 +232,7 @@ class MyLexer(Lexer):
     STRING = r'\'(\s|\S)+\''
     # @_(r'''("[^"\\]*(\\.[^"\\]*)*"|'[^'\\]*(\\.[^'\\]*)*')''')
 
-    ignore = '[\t ]'
+    ignore = r'(\t| )'
     
     def IDENTIFIER(self,t):
         return t
@@ -296,7 +296,7 @@ class MyLexer(Lexer):
 
 if __name__ == '__main__':
 	data = '''
-SELECT * FROM POTTAN WHERE N>'10.98'
+SELECT * FROM POTTAN WHERE (N>'10.98') {} [asakf] >= <= = ^ ^= +=
 '''
 	lexer = MyLexer()
 	for tok in lexer.tokenize(data):
