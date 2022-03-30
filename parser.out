@@ -1,0 +1,378 @@
+Grammar:
+
+Rule 0     S' -> start
+Rule 1     start -> query
+Rule 2     query_list -> empty
+Rule 3     query_list -> query_list query
+Rule 4     query -> empty
+Rule 5     query -> insert_stmt SEMICOLON
+Rule 6     insert_stmt -> INSERT INTO IDENTIFIER LCB value RCB
+Rule 7     insert_col_list -> IDENTIFIER
+Rule 8     insert_col_list -> insert_col_list COMMA IDENTIFIER
+Rule 9     val_list -> val_list COMMA value
+Rule 10    val_list -> value
+Rule 11    select_stmt -> SELECT is_distinct select_param FROM IDENTIFIER select_opt_where sort_order opt_limit
+Rule 12    is_distinct -> <empty>
+Rule 13    is_distinct -> DISTINCT
+Rule 14    select_param -> AVG LCB IDENTIFIER RCB
+Rule 15    select_param -> SUM LCB IDENTIFIER RCB
+Rule 16    select_param -> COUNT LCB MULOP RCB
+Rule 17    select_param -> COUNT LCB IDENTIFIER RCB
+Rule 18    select_param -> MIN LCB IDENTIFIER RCB
+Rule 19    select_param -> MAX LCB IDENTIFIER RCB
+Rule 20    select_param -> MULOP
+Rule 21    select_param -> select_col_list
+Rule 22    select_col_list -> IDENTIFIER opt_aliasing
+Rule 23    select_col_list -> select_col_list COMMA IDENTIFIER opt_aliasing
+Rule 24    opt_aliasing -> AS IDENTIFIER
+Rule 25    select_opt_where -> <empty>
+Rule 26    select_opt_where -> WHERE IDENTIFIER IS NOT NULL
+Rule 27    select_opt_where -> WHERE IDENTIFIER IS NULL
+Rule 28    select_opt_where -> WHERE condition_list
+Rule 29    condition_list -> condition
+Rule 30    condition_list -> condition OROP condition_list
+Rule 31    condition_list -> condition ANDOP condition_list
+Rule 32    condition_list -> NOT condition_list
+Rule 33    sort_order -> <empty>
+Rule 34    sort_order -> ORDER BY DESC
+Rule 35    sort_order -> ORDER BY ASC
+Rule 36    opt_limit -> <empty>
+Rule 37    opt_limit -> LIMIT INTNUM
+Rule 38    opt_limit -> LIMIT INTNUM OFFSET INTNUM
+Rule 39    delete_stmt -> DELETE FROM IDENTIFIER delete_opt_where
+Rule 40    delete_opt_where -> <empty>
+Rule 41    delete_opt_where -> WHERE condition_list
+Rule 42    condition -> IDENTIFIER NOTEQ NUMS
+Rule 43    condition -> IDENTIFIER LTOP NUMS
+Rule 44    condition -> IDENTIFIER GTOP NUMS
+Rule 45    condition -> IDENTIFIER LTEQ NUMS
+Rule 46    condition -> IDENTIFIER GTEQ NUMS
+Rule 47    condition -> IDENTIFIER EQUAL NUMS
+Rule 48    update_stmt -> UPDATE IDENTIFIER SET col_assigns select_opt_where
+Rule 49    col_assigns -> col_assign
+Rule 50    col_assigns -> col_assigns COMMA col_assign
+Rule 51    col_assign -> IDENTIFIER EQUAL value
+Rule 52    value -> STRING
+Rule 53    value -> REALNUM
+Rule 54    value -> INTNUM
+Rule 55    empty -> <empty>
+
+Unused terminals:
+
+    ALL
+    LEFT
+    TOP
+    SOME
+    DIVOP
+    PRIMARY
+    ANY
+    DROP
+    FOREIGN
+    TRUNCATE
+    INDEX
+    OUTER
+    ADD
+    VIEW
+    USE
+    SHOW
+    EXISTS
+    FULL
+    MULEQ
+    MODOP
+    CONSTRAINT
+    REPLACE
+    PROCEDURE
+    CREATE
+    BOOL
+    RSB
+    RIGHT
+    TABLE
+    SUBOP
+    OREQ
+    COL_NAME
+    ROWNUM
+    JOIN
+    KEY
+    DATABASE
+    MODEQ
+    LFB
+    OR
+    DIVEQ
+    DEFAULT
+    SUBEQ
+    ALTER
+    NAMES
+    CHARACTER
+    BETWEEN
+    AND
+    ADDEQ
+    XOROP
+    GROUP
+    ANDEQ
+    CHECK
+    IN
+    VALUES
+    VARCHAR
+    CASE
+    INNER
+    XOREQ
+    TABLE_NAME
+    HAVING
+    EXEC
+    BACKUP
+    COLUMN
+    RELOP
+    LSB
+    RFB
+    UNIQUE
+    LIKE
+    UNION
+    SEPARATORS
+    ADDOP
+
+Terminals, with rules where they appear:
+
+ADD                  : 
+ADDEQ                : 
+ADDOP                : 
+ALL                  : 
+ALTER                : 
+AND                  : 
+ANDEQ                : 
+ANDOP                : 31
+ANY                  : 
+AS                   : 24
+ASC                  : 35
+AVG                  : 14
+BACKUP               : 
+BETWEEN              : 
+BOOL                 : 
+BY                   : 34 35
+CASE                 : 
+CHARACTER            : 
+CHECK                : 
+COLUMN               : 
+COL_NAME             : 
+COMMA                : 8 9 23 50
+CONSTRAINT           : 
+COUNT                : 16 17
+CREATE               : 
+DATABASE             : 
+DEFAULT              : 
+DELETE               : 39
+DESC                 : 34
+DISTINCT             : 13
+DIVEQ                : 
+DIVOP                : 
+DROP                 : 
+EQUAL                : 47 51
+EXEC                 : 
+EXISTS               : 
+FOREIGN              : 
+FROM                 : 11 39
+FULL                 : 
+GROUP                : 
+GTEQ                 : 46
+GTOP                 : 44
+HAVING               : 
+IDENTIFIER           : 6 7 8 11 14 15 17 18 19 22 23 24 26 27 39 42 43 44 45 46 47 48 51
+IN                   : 
+INDEX                : 
+INNER                : 
+INSERT               : 6
+INTNUM               : 37 38 38 54
+INTO                 : 6
+IS                   : 26 27
+JOIN                 : 
+KEY                  : 
+LCB                  : 6 14 15 16 17 18 19
+LEFT                 : 
+LFB                  : 
+LIKE                 : 
+LIMIT                : 37 38
+LSB                  : 
+LTEQ                 : 45
+LTOP                 : 43
+MAX                  : 19
+MIN                  : 18
+MODEQ                : 
+MODOP                : 
+MULEQ                : 
+MULOP                : 16 20
+NAMES                : 
+NOT                  : 26 32
+NOTEQ                : 42
+NULL                 : 26 27
+NUMS                 : 42 43 44 45 46 47
+OFFSET               : 38
+OR                   : 
+ORDER                : 34 35
+OREQ                 : 
+OROP                 : 30
+OUTER                : 
+PRIMARY              : 
+PROCEDURE            : 
+RCB                  : 6 14 15 16 17 18 19
+REALNUM              : 53
+RELOP                : 
+REPLACE              : 
+RFB                  : 
+RIGHT                : 
+ROWNUM               : 
+RSB                  : 
+SELECT               : 11
+SEMICOLON            : 5
+SEPARATORS           : 
+SET                  : 48
+SHOW                 : 
+SOME                 : 
+STRING               : 52
+SUBEQ                : 
+SUBOP                : 
+SUM                  : 15
+TABLE                : 
+TABLE_NAME           : 
+TOP                  : 
+TRUNCATE             : 
+UNION                : 
+UNIQUE               : 
+UPDATE               : 48
+USE                  : 
+VALUES               : 
+VARCHAR              : 
+VIEW                 : 
+WHERE                : 26 27 28 41
+XOREQ                : 
+XOROP                : 
+error                : 
+
+Nonterminals, with rules where they appear:
+
+col_assign           : 49 50
+col_assigns          : 48 50
+condition            : 29 30 31
+condition_list       : 28 30 31 32 41
+delete_opt_where     : 39
+delete_stmt          : 
+empty                : 2 4
+insert_col_list      : 8
+insert_stmt          : 5
+is_distinct          : 11
+opt_aliasing         : 22 23
+opt_limit            : 11
+query                : 1 3
+query_list           : 3
+select_col_list      : 21 23
+select_opt_where     : 11 48
+select_param         : 11
+select_stmt          : 
+sort_order           : 11
+start                : 0
+update_stmt          : 
+val_list             : 9
+value                : 6 9 10 51
+
+
+state 0
+
+    (0) S' -> . start
+    (1) start -> . query
+    (4) query -> . empty
+    (5) query -> . insert_stmt SEMICOLON
+    (55) empty -> .
+    (6) insert_stmt -> . INSERT INTO IDENTIFIER LCB value RCB
+    $end            reduce using rule 55 (empty -> .)
+    INSERT          shift and go to state 5
+
+    start                          shift and go to state 1
+    query                          shift and go to state 2
+    empty                          shift and go to state 3
+    insert_stmt                    shift and go to state 4
+
+state 1
+
+    (0) S' -> start .
+
+
+state 2
+
+    (1) start -> query .
+    $end            reduce using rule 1 (start -> query .)
+
+
+state 3
+
+    (4) query -> empty .
+    $end            reduce using rule 4 (query -> empty .)
+
+
+state 4
+
+    (5) query -> insert_stmt . SEMICOLON
+    SEMICOLON       shift and go to state 6
+
+
+state 5
+
+    (6) insert_stmt -> INSERT . INTO IDENTIFIER LCB value RCB
+    INTO            shift and go to state 7
+
+
+state 6
+
+    (5) query -> insert_stmt SEMICOLON .
+    $end            reduce using rule 5 (query -> insert_stmt SEMICOLON .)
+
+
+state 7
+
+    (6) insert_stmt -> INSERT INTO . IDENTIFIER LCB value RCB
+    IDENTIFIER      shift and go to state 8
+
+
+state 8
+
+    (6) insert_stmt -> INSERT INTO IDENTIFIER . LCB value RCB
+    LCB             shift and go to state 9
+
+
+state 9
+
+    (6) insert_stmt -> INSERT INTO IDENTIFIER LCB . value RCB
+    (52) value -> . STRING
+    (53) value -> . REALNUM
+    (54) value -> . INTNUM
+    STRING          shift and go to state 11
+    REALNUM         shift and go to state 12
+    INTNUM          shift and go to state 13
+
+    value                          shift and go to state 10
+
+state 10
+
+    (6) insert_stmt -> INSERT INTO IDENTIFIER LCB value . RCB
+    RCB             shift and go to state 14
+
+
+state 11
+
+    (52) value -> STRING .
+    RCB             reduce using rule 52 (value -> STRING .)
+
+
+state 12
+
+    (53) value -> REALNUM .
+    RCB             reduce using rule 53 (value -> REALNUM .)
+
+
+state 13
+
+    (54) value -> INTNUM .
+    RCB             reduce using rule 54 (value -> INTNUM .)
+
+
+state 14
+
+    (6) insert_stmt -> INSERT INTO IDENTIFIER LCB value RCB .
+    SEMICOLON       reduce using rule 6 (insert_stmt -> INSERT INTO IDENTIFIER LCB value RCB .)
