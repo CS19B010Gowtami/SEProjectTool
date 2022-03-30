@@ -1,0 +1,1113 @@
+Grammar:
+
+Rule 0     S' -> start1
+Rule 1     start1 -> query
+Rule 2     query_list -> empty
+Rule 3     query_list -> query_list query
+Rule 4     query -> empty
+Rule 5     query -> delete_stmt
+Rule 6     query -> insert_stmt
+Rule 7     query -> update_stmt ;
+Rule 8     query -> select_stmt ;
+Rule 9     insert_stmt -> INSERT INTO IDENTIFIER LCB value RCB
+Rule 10    insert_col_list -> IDENTIFIER
+Rule 11    insert_col_list -> insert_col_list COMMA IDENTIFIER
+Rule 12    val_list -> val_list COMMA value
+Rule 13    val_list -> value
+Rule 14    select_stmt -> SELECT is_distinct select_param FROM IDENTIFIER ;
+Rule 15    is_distinct -> <empty>
+Rule 16    is_distinct -> DISTINCT
+Rule 17    select_param -> AVG LCB IDENTIFIER RCB
+Rule 18    select_param -> SUM LCB IDENTIFIER RCB
+Rule 19    select_param -> COUNT LCB MULOP RCB
+Rule 20    select_param -> COUNT LCB IDENTIFIER RCB
+Rule 21    select_param -> MIN LCB IDENTIFIER RCB
+Rule 22    select_param -> MAX LCB IDENTIFIER RCB
+Rule 23    select_param -> MULOP
+Rule 24    select_param -> select_col_list
+Rule 25    select_col_list -> IDENTIFIER opt_aliasing
+Rule 26    select_col_list -> select_col_list COMMA IDENTIFIER opt_aliasing
+Rule 27    opt_aliasing -> AS IDENTIFIER
+Rule 28    select_opt_where -> <empty>
+Rule 29    select_opt_where -> WHERE IDENTIFIER IS NOT NULL
+Rule 30    select_opt_where -> WHERE IDENTIFIER IS NULL
+Rule 31    select_opt_where -> WHERE condition_list
+Rule 32    condition_list -> condition
+Rule 33    condition_list -> condition OROP condition_list
+Rule 34    condition_list -> condition ANDOP condition_list
+Rule 35    condition_list -> NOT condition_list
+Rule 36    sort_order -> <empty>
+Rule 37    sort_order -> ORDER BY DESC
+Rule 38    sort_order -> ORDER BY ASC
+Rule 39    opt_limit -> <empty>
+Rule 40    opt_limit -> LIMIT INTNUM
+Rule 41    opt_limit -> LIMIT INTNUM OFFSET INTNUM
+Rule 42    delete_stmt -> DELETE FROM IDENTIFIER delete_opt_where
+Rule 43    delete_opt_where -> <empty>
+Rule 44    delete_opt_where -> WHERE condition_list
+Rule 45    condition -> IDENTIFIER NOTEQ NUMS
+Rule 46    condition -> IDENTIFIER LTOP NUMS
+Rule 47    condition -> IDENTIFIER GTOP NUMS
+Rule 48    condition -> IDENTIFIER LTEQ NUMS
+Rule 49    condition -> IDENTIFIER GTEQ NUMS
+Rule 50    condition -> IDENTIFIER EQUAL NUMS
+Rule 51    update_stmt -> UPDATE IDENTIFIER SET col_assigns select_opt_where
+Rule 52    col_assigns -> col_assign
+Rule 53    col_assigns -> col_assigns COMMA col_assign
+Rule 54    col_assign -> IDENTIFIER EQUAL value
+Rule 55    value -> STRING
+Rule 56    value -> REALNUM
+Rule 57    value -> INTNUM
+Rule 58    empty -> <empty>
+
+Unused terminals:
+
+    DROP
+    FULL
+    VIEW
+    OREQ
+    SUBEQ
+    VALUES
+    TRUNCATE
+    REPLACE
+    BETWEEN
+    EXISTS
+    COL_NAME
+    AND
+    RSB
+    CONSTRAINT
+    MODEQ
+    EXEC
+    COLUMN
+    XOROP
+    ANDEQ
+    ALTER
+    INDEX
+    ADDOP
+    UNION
+    UNIQUE
+    ROWNUM
+    XOREQ
+    ANY
+    ALL
+    SUBOP
+    LSB
+    CHECK
+    DIVEQ
+    VARCHAR
+    FOREIGN
+    MODOP
+    SOME
+    RFB
+    PROCEDURE
+    JOIN
+    TABLE
+    LIKE
+    SEPARATORS
+    BOOL
+    DEFAULT
+    USE
+    LEFT
+    GROUP
+    BACKUP
+    CREATE
+    DIVOP
+    RIGHT
+    NAMES
+    KEY
+    SHOW
+    DATABASE
+    INNER
+    MULEQ
+    TABLE_NAME
+    HAVING
+    OR
+    OUTER
+    RELOP
+    PRIMARY
+    TOP
+    CHARACTER
+    ADD
+    LFB
+    IN
+    CASE
+    ADDEQ
+
+Terminals, with rules where they appear:
+
+;                    : 7 8 14
+ADD                  : 
+ADDEQ                : 
+ADDOP                : 
+ALL                  : 
+ALTER                : 
+AND                  : 
+ANDEQ                : 
+ANDOP                : 34
+ANY                  : 
+AS                   : 27
+ASC                  : 38
+AVG                  : 17
+BACKUP               : 
+BETWEEN              : 
+BOOL                 : 
+BY                   : 37 38
+CASE                 : 
+CHARACTER            : 
+CHECK                : 
+COLUMN               : 
+COL_NAME             : 
+COMMA                : 11 12 26 53
+CONSTRAINT           : 
+COUNT                : 19 20
+CREATE               : 
+DATABASE             : 
+DEFAULT              : 
+DELETE               : 42
+DESC                 : 37
+DISTINCT             : 16
+DIVEQ                : 
+DIVOP                : 
+DROP                 : 
+EQUAL                : 50 54
+EXEC                 : 
+EXISTS               : 
+FOREIGN              : 
+FROM                 : 14 42
+FULL                 : 
+GROUP                : 
+GTEQ                 : 49
+GTOP                 : 47
+HAVING               : 
+IDENTIFIER           : 9 10 11 14 17 18 20 21 22 25 26 27 29 30 42 45 46 47 48 49 50 51 54
+IN                   : 
+INDEX                : 
+INNER                : 
+INSERT               : 9
+INTNUM               : 40 41 41 57
+INTO                 : 9
+IS                   : 29 30
+JOIN                 : 
+KEY                  : 
+LCB                  : 9 17 18 19 20 21 22
+LEFT                 : 
+LFB                  : 
+LIKE                 : 
+LIMIT                : 40 41
+LSB                  : 
+LTEQ                 : 48
+LTOP                 : 46
+MAX                  : 22
+MIN                  : 21
+MODEQ                : 
+MODOP                : 
+MULEQ                : 
+MULOP                : 19 23
+NAMES                : 
+NOT                  : 29 35
+NOTEQ                : 45
+NULL                 : 29 30
+NUMS                 : 45 46 47 48 49 50
+OFFSET               : 41
+OR                   : 
+ORDER                : 37 38
+OREQ                 : 
+OROP                 : 33
+OUTER                : 
+PRIMARY              : 
+PROCEDURE            : 
+RCB                  : 9 17 18 19 20 21 22
+REALNUM              : 56
+RELOP                : 
+REPLACE              : 
+RFB                  : 
+RIGHT                : 
+ROWNUM               : 
+RSB                  : 
+SELECT               : 14
+SEPARATORS           : 
+SET                  : 51
+SHOW                 : 
+SOME                 : 
+STRING               : 55
+SUBEQ                : 
+SUBOP                : 
+SUM                  : 18
+TABLE                : 
+TABLE_NAME           : 
+TOP                  : 
+TRUNCATE             : 
+UNION                : 
+UNIQUE               : 
+UPDATE               : 51
+USE                  : 
+VALUES               : 
+VARCHAR              : 
+VIEW                 : 
+WHERE                : 29 30 31 44
+XOREQ                : 
+XOROP                : 
+error                : 
+
+Nonterminals, with rules where they appear:
+
+col_assign           : 52 53
+col_assigns          : 51 53
+condition            : 32 33 34
+condition_list       : 31 33 34 35 44
+delete_opt_where     : 42
+delete_stmt          : 5
+empty                : 2 4
+insert_col_list      : 11
+insert_stmt          : 6
+is_distinct          : 14
+opt_aliasing         : 25 26
+opt_limit            : 
+query                : 1 3
+query_list           : 3
+select_col_list      : 24 26
+select_opt_where     : 51
+select_param         : 14
+select_stmt          : 8
+sort_order           : 
+start1               : 0
+update_stmt          : 7
+val_list             : 12
+value                : 9 12 13 54
+
+
+state 0
+
+    (0) S' -> . start1
+    (1) start1 -> . query
+    (4) query -> . empty
+    (5) query -> . delete_stmt
+    (6) query -> . insert_stmt
+    (7) query -> . update_stmt ;
+    (8) query -> . select_stmt ;
+    (58) empty -> .
+    (42) delete_stmt -> . DELETE FROM IDENTIFIER delete_opt_where
+    (9) insert_stmt -> . INSERT INTO IDENTIFIER LCB value RCB
+    (51) update_stmt -> . UPDATE IDENTIFIER SET col_assigns select_opt_where
+    (14) select_stmt -> . SELECT is_distinct select_param FROM IDENTIFIER ;
+    $end            reduce using rule 58 (empty -> .)
+    DELETE          shift and go to state 8
+    INSERT          shift and go to state 9
+    UPDATE          shift and go to state 10
+    SELECT          shift and go to state 11
+
+    start1                         shift and go to state 1
+    query                          shift and go to state 2
+    empty                          shift and go to state 3
+    delete_stmt                    shift and go to state 4
+    insert_stmt                    shift and go to state 5
+    update_stmt                    shift and go to state 6
+    select_stmt                    shift and go to state 7
+
+state 1
+
+    (0) S' -> start1 .
+
+
+state 2
+
+    (1) start1 -> query .
+    $end            reduce using rule 1 (start1 -> query .)
+
+
+state 3
+
+    (4) query -> empty .
+    $end            reduce using rule 4 (query -> empty .)
+
+
+state 4
+
+    (5) query -> delete_stmt .
+    $end            reduce using rule 5 (query -> delete_stmt .)
+
+
+state 5
+
+    (6) query -> insert_stmt .
+    $end            reduce using rule 6 (query -> insert_stmt .)
+
+
+state 6
+
+    (7) query -> update_stmt . ;
+    ;               shift and go to state 12
+
+
+state 7
+
+    (8) query -> select_stmt . ;
+    ;               shift and go to state 13
+
+
+state 8
+
+    (42) delete_stmt -> DELETE . FROM IDENTIFIER delete_opt_where
+    FROM            shift and go to state 14
+
+
+state 9
+
+    (9) insert_stmt -> INSERT . INTO IDENTIFIER LCB value RCB
+    INTO            shift and go to state 15
+
+
+state 10
+
+    (51) update_stmt -> UPDATE . IDENTIFIER SET col_assigns select_opt_where
+    IDENTIFIER      shift and go to state 16
+
+
+state 11
+
+    (14) select_stmt -> SELECT . is_distinct select_param FROM IDENTIFIER ;
+    (15) is_distinct -> .
+    (16) is_distinct -> . DISTINCT
+    AVG             reduce using rule 15 (is_distinct -> .)
+    SUM             reduce using rule 15 (is_distinct -> .)
+    COUNT           reduce using rule 15 (is_distinct -> .)
+    MIN             reduce using rule 15 (is_distinct -> .)
+    MAX             reduce using rule 15 (is_distinct -> .)
+    MULOP           reduce using rule 15 (is_distinct -> .)
+    IDENTIFIER      reduce using rule 15 (is_distinct -> .)
+    DISTINCT        shift and go to state 18
+
+    is_distinct                    shift and go to state 17
+
+state 12
+
+    (7) query -> update_stmt ; .
+    $end            reduce using rule 7 (query -> update_stmt ; .)
+
+
+state 13
+
+    (8) query -> select_stmt ; .
+    $end            reduce using rule 8 (query -> select_stmt ; .)
+
+
+state 14
+
+    (42) delete_stmt -> DELETE FROM . IDENTIFIER delete_opt_where
+    IDENTIFIER      shift and go to state 19
+
+
+state 15
+
+    (9) insert_stmt -> INSERT INTO . IDENTIFIER LCB value RCB
+    IDENTIFIER      shift and go to state 20
+
+
+state 16
+
+    (51) update_stmt -> UPDATE IDENTIFIER . SET col_assigns select_opt_where
+    SET             shift and go to state 21
+
+
+state 17
+
+    (14) select_stmt -> SELECT is_distinct . select_param FROM IDENTIFIER ;
+    (17) select_param -> . AVG LCB IDENTIFIER RCB
+    (18) select_param -> . SUM LCB IDENTIFIER RCB
+    (19) select_param -> . COUNT LCB MULOP RCB
+    (20) select_param -> . COUNT LCB IDENTIFIER RCB
+    (21) select_param -> . MIN LCB IDENTIFIER RCB
+    (22) select_param -> . MAX LCB IDENTIFIER RCB
+    (23) select_param -> . MULOP
+    (24) select_param -> . select_col_list
+    (25) select_col_list -> . IDENTIFIER opt_aliasing
+    (26) select_col_list -> . select_col_list COMMA IDENTIFIER opt_aliasing
+    AVG             shift and go to state 24
+    SUM             shift and go to state 25
+    COUNT           shift and go to state 26
+    MIN             shift and go to state 28
+    MAX             shift and go to state 29
+    MULOP           shift and go to state 27
+    IDENTIFIER      shift and go to state 23
+
+    select_param                   shift and go to state 22
+    select_col_list                shift and go to state 30
+
+state 18
+
+    (16) is_distinct -> DISTINCT .
+    AVG             reduce using rule 16 (is_distinct -> DISTINCT .)
+    SUM             reduce using rule 16 (is_distinct -> DISTINCT .)
+    COUNT           reduce using rule 16 (is_distinct -> DISTINCT .)
+    MIN             reduce using rule 16 (is_distinct -> DISTINCT .)
+    MAX             reduce using rule 16 (is_distinct -> DISTINCT .)
+    MULOP           reduce using rule 16 (is_distinct -> DISTINCT .)
+    IDENTIFIER      reduce using rule 16 (is_distinct -> DISTINCT .)
+
+
+state 19
+
+    (42) delete_stmt -> DELETE FROM IDENTIFIER . delete_opt_where
+    (43) delete_opt_where -> .
+    (44) delete_opt_where -> . WHERE condition_list
+    $end            reduce using rule 43 (delete_opt_where -> .)
+    WHERE           shift and go to state 32
+
+    delete_opt_where               shift and go to state 31
+
+state 20
+
+    (9) insert_stmt -> INSERT INTO IDENTIFIER . LCB value RCB
+    LCB             shift and go to state 33
+
+
+state 21
+
+    (51) update_stmt -> UPDATE IDENTIFIER SET . col_assigns select_opt_where
+    (52) col_assigns -> . col_assign
+    (53) col_assigns -> . col_assigns COMMA col_assign
+    (54) col_assign -> . IDENTIFIER EQUAL value
+    IDENTIFIER      shift and go to state 34
+
+    col_assigns                    shift and go to state 35
+    col_assign                     shift and go to state 36
+
+state 22
+
+    (14) select_stmt -> SELECT is_distinct select_param . FROM IDENTIFIER ;
+    FROM            shift and go to state 37
+
+
+state 23
+
+    (25) select_col_list -> IDENTIFIER . opt_aliasing
+    (27) opt_aliasing -> . AS IDENTIFIER
+    AS              shift and go to state 39
+
+    opt_aliasing                   shift and go to state 38
+
+state 24
+
+    (17) select_param -> AVG . LCB IDENTIFIER RCB
+    LCB             shift and go to state 40
+
+
+state 25
+
+    (18) select_param -> SUM . LCB IDENTIFIER RCB
+    LCB             shift and go to state 41
+
+
+state 26
+
+    (19) select_param -> COUNT . LCB MULOP RCB
+    (20) select_param -> COUNT . LCB IDENTIFIER RCB
+    LCB             shift and go to state 42
+
+
+state 27
+
+    (23) select_param -> MULOP .
+    FROM            reduce using rule 23 (select_param -> MULOP .)
+
+
+state 28
+
+    (21) select_param -> MIN . LCB IDENTIFIER RCB
+    LCB             shift and go to state 43
+
+
+state 29
+
+    (22) select_param -> MAX . LCB IDENTIFIER RCB
+    LCB             shift and go to state 44
+
+
+state 30
+
+    (24) select_param -> select_col_list .
+    (26) select_col_list -> select_col_list . COMMA IDENTIFIER opt_aliasing
+    FROM            reduce using rule 24 (select_param -> select_col_list .)
+    COMMA           shift and go to state 45
+
+
+state 31
+
+    (42) delete_stmt -> DELETE FROM IDENTIFIER delete_opt_where .
+    $end            reduce using rule 42 (delete_stmt -> DELETE FROM IDENTIFIER delete_opt_where .)
+
+
+state 32
+
+    (44) delete_opt_where -> WHERE . condition_list
+    (32) condition_list -> . condition
+    (33) condition_list -> . condition OROP condition_list
+    (34) condition_list -> . condition ANDOP condition_list
+    (35) condition_list -> . NOT condition_list
+    (45) condition -> . IDENTIFIER NOTEQ NUMS
+    (46) condition -> . IDENTIFIER LTOP NUMS
+    (47) condition -> . IDENTIFIER GTOP NUMS
+    (48) condition -> . IDENTIFIER LTEQ NUMS
+    (49) condition -> . IDENTIFIER GTEQ NUMS
+    (50) condition -> . IDENTIFIER EQUAL NUMS
+    NOT             shift and go to state 48
+    IDENTIFIER      shift and go to state 49
+
+    condition_list                 shift and go to state 46
+    condition                      shift and go to state 47
+
+state 33
+
+    (9) insert_stmt -> INSERT INTO IDENTIFIER LCB . value RCB
+    (55) value -> . STRING
+    (56) value -> . REALNUM
+    (57) value -> . INTNUM
+    STRING          shift and go to state 51
+    REALNUM         shift and go to state 52
+    INTNUM          shift and go to state 53
+
+    value                          shift and go to state 50
+
+state 34
+
+    (54) col_assign -> IDENTIFIER . EQUAL value
+    EQUAL           shift and go to state 54
+
+
+state 35
+
+    (51) update_stmt -> UPDATE IDENTIFIER SET col_assigns . select_opt_where
+    (53) col_assigns -> col_assigns . COMMA col_assign
+    (28) select_opt_where -> .
+    (29) select_opt_where -> . WHERE IDENTIFIER IS NOT NULL
+    (30) select_opt_where -> . WHERE IDENTIFIER IS NULL
+    (31) select_opt_where -> . WHERE condition_list
+    COMMA           shift and go to state 56
+    ;               reduce using rule 28 (select_opt_where -> .)
+    WHERE           shift and go to state 57
+
+    select_opt_where               shift and go to state 55
+
+state 36
+
+    (52) col_assigns -> col_assign .
+    COMMA           reduce using rule 52 (col_assigns -> col_assign .)
+    WHERE           reduce using rule 52 (col_assigns -> col_assign .)
+    ;               reduce using rule 52 (col_assigns -> col_assign .)
+
+
+state 37
+
+    (14) select_stmt -> SELECT is_distinct select_param FROM . IDENTIFIER ;
+    IDENTIFIER      shift and go to state 58
+
+
+state 38
+
+    (25) select_col_list -> IDENTIFIER opt_aliasing .
+    COMMA           reduce using rule 25 (select_col_list -> IDENTIFIER opt_aliasing .)
+    FROM            reduce using rule 25 (select_col_list -> IDENTIFIER opt_aliasing .)
+
+
+state 39
+
+    (27) opt_aliasing -> AS . IDENTIFIER
+    IDENTIFIER      shift and go to state 59
+
+
+state 40
+
+    (17) select_param -> AVG LCB . IDENTIFIER RCB
+    IDENTIFIER      shift and go to state 60
+
+
+state 41
+
+    (18) select_param -> SUM LCB . IDENTIFIER RCB
+    IDENTIFIER      shift and go to state 61
+
+
+state 42
+
+    (19) select_param -> COUNT LCB . MULOP RCB
+    (20) select_param -> COUNT LCB . IDENTIFIER RCB
+    MULOP           shift and go to state 62
+    IDENTIFIER      shift and go to state 63
+
+
+state 43
+
+    (21) select_param -> MIN LCB . IDENTIFIER RCB
+    IDENTIFIER      shift and go to state 64
+
+
+state 44
+
+    (22) select_param -> MAX LCB . IDENTIFIER RCB
+    IDENTIFIER      shift and go to state 65
+
+
+state 45
+
+    (26) select_col_list -> select_col_list COMMA . IDENTIFIER opt_aliasing
+    IDENTIFIER      shift and go to state 66
+
+
+state 46
+
+    (44) delete_opt_where -> WHERE condition_list .
+    $end            reduce using rule 44 (delete_opt_where -> WHERE condition_list .)
+
+
+state 47
+
+    (32) condition_list -> condition .
+    (33) condition_list -> condition . OROP condition_list
+    (34) condition_list -> condition . ANDOP condition_list
+    $end            reduce using rule 32 (condition_list -> condition .)
+    ;               reduce using rule 32 (condition_list -> condition .)
+    OROP            shift and go to state 67
+    ANDOP           shift and go to state 68
+
+
+state 48
+
+    (35) condition_list -> NOT . condition_list
+    (32) condition_list -> . condition
+    (33) condition_list -> . condition OROP condition_list
+    (34) condition_list -> . condition ANDOP condition_list
+    (35) condition_list -> . NOT condition_list
+    (45) condition -> . IDENTIFIER NOTEQ NUMS
+    (46) condition -> . IDENTIFIER LTOP NUMS
+    (47) condition -> . IDENTIFIER GTOP NUMS
+    (48) condition -> . IDENTIFIER LTEQ NUMS
+    (49) condition -> . IDENTIFIER GTEQ NUMS
+    (50) condition -> . IDENTIFIER EQUAL NUMS
+    NOT             shift and go to state 48
+    IDENTIFIER      shift and go to state 49
+
+    condition_list                 shift and go to state 69
+    condition                      shift and go to state 47
+
+state 49
+
+    (45) condition -> IDENTIFIER . NOTEQ NUMS
+    (46) condition -> IDENTIFIER . LTOP NUMS
+    (47) condition -> IDENTIFIER . GTOP NUMS
+    (48) condition -> IDENTIFIER . LTEQ NUMS
+    (49) condition -> IDENTIFIER . GTEQ NUMS
+    (50) condition -> IDENTIFIER . EQUAL NUMS
+    NOTEQ           shift and go to state 70
+    LTOP            shift and go to state 71
+    GTOP            shift and go to state 72
+    LTEQ            shift and go to state 73
+    GTEQ            shift and go to state 74
+    EQUAL           shift and go to state 75
+
+
+state 50
+
+    (9) insert_stmt -> INSERT INTO IDENTIFIER LCB value . RCB
+    RCB             shift and go to state 76
+
+
+state 51
+
+    (55) value -> STRING .
+    RCB             reduce using rule 55 (value -> STRING .)
+    COMMA           reduce using rule 55 (value -> STRING .)
+    WHERE           reduce using rule 55 (value -> STRING .)
+    ;               reduce using rule 55 (value -> STRING .)
+
+
+state 52
+
+    (56) value -> REALNUM .
+    RCB             reduce using rule 56 (value -> REALNUM .)
+    COMMA           reduce using rule 56 (value -> REALNUM .)
+    WHERE           reduce using rule 56 (value -> REALNUM .)
+    ;               reduce using rule 56 (value -> REALNUM .)
+
+
+state 53
+
+    (57) value -> INTNUM .
+    RCB             reduce using rule 57 (value -> INTNUM .)
+    COMMA           reduce using rule 57 (value -> INTNUM .)
+    WHERE           reduce using rule 57 (value -> INTNUM .)
+    ;               reduce using rule 57 (value -> INTNUM .)
+
+
+state 54
+
+    (54) col_assign -> IDENTIFIER EQUAL . value
+    (55) value -> . STRING
+    (56) value -> . REALNUM
+    (57) value -> . INTNUM
+    STRING          shift and go to state 51
+    REALNUM         shift and go to state 52
+    INTNUM          shift and go to state 53
+
+    value                          shift and go to state 77
+
+state 55
+
+    (51) update_stmt -> UPDATE IDENTIFIER SET col_assigns select_opt_where .
+    ;               reduce using rule 51 (update_stmt -> UPDATE IDENTIFIER SET col_assigns select_opt_where .)
+
+
+state 56
+
+    (53) col_assigns -> col_assigns COMMA . col_assign
+    (54) col_assign -> . IDENTIFIER EQUAL value
+    IDENTIFIER      shift and go to state 34
+
+    col_assign                     shift and go to state 78
+
+state 57
+
+    (29) select_opt_where -> WHERE . IDENTIFIER IS NOT NULL
+    (30) select_opt_where -> WHERE . IDENTIFIER IS NULL
+    (31) select_opt_where -> WHERE . condition_list
+    (32) condition_list -> . condition
+    (33) condition_list -> . condition OROP condition_list
+    (34) condition_list -> . condition ANDOP condition_list
+    (35) condition_list -> . NOT condition_list
+    (45) condition -> . IDENTIFIER NOTEQ NUMS
+    (46) condition -> . IDENTIFIER LTOP NUMS
+    (47) condition -> . IDENTIFIER GTOP NUMS
+    (48) condition -> . IDENTIFIER LTEQ NUMS
+    (49) condition -> . IDENTIFIER GTEQ NUMS
+    (50) condition -> . IDENTIFIER EQUAL NUMS
+    IDENTIFIER      shift and go to state 79
+    NOT             shift and go to state 48
+
+    condition_list                 shift and go to state 80
+    condition                      shift and go to state 47
+
+state 58
+
+    (14) select_stmt -> SELECT is_distinct select_param FROM IDENTIFIER . ;
+    ;               shift and go to state 81
+
+
+state 59
+
+    (27) opt_aliasing -> AS IDENTIFIER .
+    COMMA           reduce using rule 27 (opt_aliasing -> AS IDENTIFIER .)
+    FROM            reduce using rule 27 (opt_aliasing -> AS IDENTIFIER .)
+
+
+state 60
+
+    (17) select_param -> AVG LCB IDENTIFIER . RCB
+    RCB             shift and go to state 82
+
+
+state 61
+
+    (18) select_param -> SUM LCB IDENTIFIER . RCB
+    RCB             shift and go to state 83
+
+
+state 62
+
+    (19) select_param -> COUNT LCB MULOP . RCB
+    RCB             shift and go to state 84
+
+
+state 63
+
+    (20) select_param -> COUNT LCB IDENTIFIER . RCB
+    RCB             shift and go to state 85
+
+
+state 64
+
+    (21) select_param -> MIN LCB IDENTIFIER . RCB
+    RCB             shift and go to state 86
+
+
+state 65
+
+    (22) select_param -> MAX LCB IDENTIFIER . RCB
+    RCB             shift and go to state 87
+
+
+state 66
+
+    (26) select_col_list -> select_col_list COMMA IDENTIFIER . opt_aliasing
+    (27) opt_aliasing -> . AS IDENTIFIER
+    AS              shift and go to state 39
+
+    opt_aliasing                   shift and go to state 88
+
+state 67
+
+    (33) condition_list -> condition OROP . condition_list
+    (32) condition_list -> . condition
+    (33) condition_list -> . condition OROP condition_list
+    (34) condition_list -> . condition ANDOP condition_list
+    (35) condition_list -> . NOT condition_list
+    (45) condition -> . IDENTIFIER NOTEQ NUMS
+    (46) condition -> . IDENTIFIER LTOP NUMS
+    (47) condition -> . IDENTIFIER GTOP NUMS
+    (48) condition -> . IDENTIFIER LTEQ NUMS
+    (49) condition -> . IDENTIFIER GTEQ NUMS
+    (50) condition -> . IDENTIFIER EQUAL NUMS
+    NOT             shift and go to state 48
+    IDENTIFIER      shift and go to state 49
+
+    condition                      shift and go to state 47
+    condition_list                 shift and go to state 89
+
+state 68
+
+    (34) condition_list -> condition ANDOP . condition_list
+    (32) condition_list -> . condition
+    (33) condition_list -> . condition OROP condition_list
+    (34) condition_list -> . condition ANDOP condition_list
+    (35) condition_list -> . NOT condition_list
+    (45) condition -> . IDENTIFIER NOTEQ NUMS
+    (46) condition -> . IDENTIFIER LTOP NUMS
+    (47) condition -> . IDENTIFIER GTOP NUMS
+    (48) condition -> . IDENTIFIER LTEQ NUMS
+    (49) condition -> . IDENTIFIER GTEQ NUMS
+    (50) condition -> . IDENTIFIER EQUAL NUMS
+    NOT             shift and go to state 48
+    IDENTIFIER      shift and go to state 49
+
+    condition                      shift and go to state 47
+    condition_list                 shift and go to state 90
+
+state 69
+
+    (35) condition_list -> NOT condition_list .
+    $end            reduce using rule 35 (condition_list -> NOT condition_list .)
+    ;               reduce using rule 35 (condition_list -> NOT condition_list .)
+
+
+state 70
+
+    (45) condition -> IDENTIFIER NOTEQ . NUMS
+    NUMS            shift and go to state 91
+
+
+state 71
+
+    (46) condition -> IDENTIFIER LTOP . NUMS
+    NUMS            shift and go to state 92
+
+
+state 72
+
+    (47) condition -> IDENTIFIER GTOP . NUMS
+    NUMS            shift and go to state 93
+
+
+state 73
+
+    (48) condition -> IDENTIFIER LTEQ . NUMS
+    NUMS            shift and go to state 94
+
+
+state 74
+
+    (49) condition -> IDENTIFIER GTEQ . NUMS
+    NUMS            shift and go to state 95
+
+
+state 75
+
+    (50) condition -> IDENTIFIER EQUAL . NUMS
+    NUMS            shift and go to state 96
+
+
+state 76
+
+    (9) insert_stmt -> INSERT INTO IDENTIFIER LCB value RCB .
+    $end            reduce using rule 9 (insert_stmt -> INSERT INTO IDENTIFIER LCB value RCB .)
+
+
+state 77
+
+    (54) col_assign -> IDENTIFIER EQUAL value .
+    COMMA           reduce using rule 54 (col_assign -> IDENTIFIER EQUAL value .)
+    WHERE           reduce using rule 54 (col_assign -> IDENTIFIER EQUAL value .)
+    ;               reduce using rule 54 (col_assign -> IDENTIFIER EQUAL value .)
+
+
+state 78
+
+    (53) col_assigns -> col_assigns COMMA col_assign .
+    COMMA           reduce using rule 53 (col_assigns -> col_assigns COMMA col_assign .)
+    WHERE           reduce using rule 53 (col_assigns -> col_assigns COMMA col_assign .)
+    ;               reduce using rule 53 (col_assigns -> col_assigns COMMA col_assign .)
+
+
+state 79
+
+    (29) select_opt_where -> WHERE IDENTIFIER . IS NOT NULL
+    (30) select_opt_where -> WHERE IDENTIFIER . IS NULL
+    (45) condition -> IDENTIFIER . NOTEQ NUMS
+    (46) condition -> IDENTIFIER . LTOP NUMS
+    (47) condition -> IDENTIFIER . GTOP NUMS
+    (48) condition -> IDENTIFIER . LTEQ NUMS
+    (49) condition -> IDENTIFIER . GTEQ NUMS
+    (50) condition -> IDENTIFIER . EQUAL NUMS
+    IS              shift and go to state 97
+    NOTEQ           shift and go to state 70
+    LTOP            shift and go to state 71
+    GTOP            shift and go to state 72
+    LTEQ            shift and go to state 73
+    GTEQ            shift and go to state 74
+    EQUAL           shift and go to state 75
+
+
+state 80
+
+    (31) select_opt_where -> WHERE condition_list .
+    ;               reduce using rule 31 (select_opt_where -> WHERE condition_list .)
+
+
+state 81
+
+    (14) select_stmt -> SELECT is_distinct select_param FROM IDENTIFIER ; .
+    ;               reduce using rule 14 (select_stmt -> SELECT is_distinct select_param FROM IDENTIFIER ; .)
+
+
+state 82
+
+    (17) select_param -> AVG LCB IDENTIFIER RCB .
+    FROM            reduce using rule 17 (select_param -> AVG LCB IDENTIFIER RCB .)
+
+
+state 83
+
+    (18) select_param -> SUM LCB IDENTIFIER RCB .
+    FROM            reduce using rule 18 (select_param -> SUM LCB IDENTIFIER RCB .)
+
+
+state 84
+
+    (19) select_param -> COUNT LCB MULOP RCB .
+    FROM            reduce using rule 19 (select_param -> COUNT LCB MULOP RCB .)
+
+
+state 85
+
+    (20) select_param -> COUNT LCB IDENTIFIER RCB .
+    FROM            reduce using rule 20 (select_param -> COUNT LCB IDENTIFIER RCB .)
+
+
+state 86
+
+    (21) select_param -> MIN LCB IDENTIFIER RCB .
+    FROM            reduce using rule 21 (select_param -> MIN LCB IDENTIFIER RCB .)
+
+
+state 87
+
+    (22) select_param -> MAX LCB IDENTIFIER RCB .
+    FROM            reduce using rule 22 (select_param -> MAX LCB IDENTIFIER RCB .)
+
+
+state 88
+
+    (26) select_col_list -> select_col_list COMMA IDENTIFIER opt_aliasing .
+    COMMA           reduce using rule 26 (select_col_list -> select_col_list COMMA IDENTIFIER opt_aliasing .)
+    FROM            reduce using rule 26 (select_col_list -> select_col_list COMMA IDENTIFIER opt_aliasing .)
+
+
+state 89
+
+    (33) condition_list -> condition OROP condition_list .
+    $end            reduce using rule 33 (condition_list -> condition OROP condition_list .)
+    ;               reduce using rule 33 (condition_list -> condition OROP condition_list .)
+
+
+state 90
+
+    (34) condition_list -> condition ANDOP condition_list .
+    $end            reduce using rule 34 (condition_list -> condition ANDOP condition_list .)
+    ;               reduce using rule 34 (condition_list -> condition ANDOP condition_list .)
+
+
+state 91
+
+    (45) condition -> IDENTIFIER NOTEQ NUMS .
+    OROP            reduce using rule 45 (condition -> IDENTIFIER NOTEQ NUMS .)
+    ANDOP           reduce using rule 45 (condition -> IDENTIFIER NOTEQ NUMS .)
+    $end            reduce using rule 45 (condition -> IDENTIFIER NOTEQ NUMS .)
+    ;               reduce using rule 45 (condition -> IDENTIFIER NOTEQ NUMS .)
+
+
+state 92
+
+    (46) condition -> IDENTIFIER LTOP NUMS .
+    OROP            reduce using rule 46 (condition -> IDENTIFIER LTOP NUMS .)
+    ANDOP           reduce using rule 46 (condition -> IDENTIFIER LTOP NUMS .)
+    $end            reduce using rule 46 (condition -> IDENTIFIER LTOP NUMS .)
+    ;               reduce using rule 46 (condition -> IDENTIFIER LTOP NUMS .)
+
+
+state 93
+
+    (47) condition -> IDENTIFIER GTOP NUMS .
+    OROP            reduce using rule 47 (condition -> IDENTIFIER GTOP NUMS .)
+    ANDOP           reduce using rule 47 (condition -> IDENTIFIER GTOP NUMS .)
+    $end            reduce using rule 47 (condition -> IDENTIFIER GTOP NUMS .)
+    ;               reduce using rule 47 (condition -> IDENTIFIER GTOP NUMS .)
+
+
+state 94
+
+    (48) condition -> IDENTIFIER LTEQ NUMS .
+    OROP            reduce using rule 48 (condition -> IDENTIFIER LTEQ NUMS .)
+    ANDOP           reduce using rule 48 (condition -> IDENTIFIER LTEQ NUMS .)
+    $end            reduce using rule 48 (condition -> IDENTIFIER LTEQ NUMS .)
+    ;               reduce using rule 48 (condition -> IDENTIFIER LTEQ NUMS .)
+
+
+state 95
+
+    (49) condition -> IDENTIFIER GTEQ NUMS .
+    OROP            reduce using rule 49 (condition -> IDENTIFIER GTEQ NUMS .)
+    ANDOP           reduce using rule 49 (condition -> IDENTIFIER GTEQ NUMS .)
+    $end            reduce using rule 49 (condition -> IDENTIFIER GTEQ NUMS .)
+    ;               reduce using rule 49 (condition -> IDENTIFIER GTEQ NUMS .)
+
+
+state 96
+
+    (50) condition -> IDENTIFIER EQUAL NUMS .
+    OROP            reduce using rule 50 (condition -> IDENTIFIER EQUAL NUMS .)
+    ANDOP           reduce using rule 50 (condition -> IDENTIFIER EQUAL NUMS .)
+    $end            reduce using rule 50 (condition -> IDENTIFIER EQUAL NUMS .)
+    ;               reduce using rule 50 (condition -> IDENTIFIER EQUAL NUMS .)
+
+
+state 97
+
+    (29) select_opt_where -> WHERE IDENTIFIER IS . NOT NULL
+    (30) select_opt_where -> WHERE IDENTIFIER IS . NULL
+    NOT             shift and go to state 98
+    NULL            shift and go to state 99
+
+
+state 98
+
+    (29) select_opt_where -> WHERE IDENTIFIER IS NOT . NULL
+    NULL            shift and go to state 100
+
+
+state 99
+
+    (30) select_opt_where -> WHERE IDENTIFIER IS NULL .
+    ;               reduce using rule 30 (select_opt_where -> WHERE IDENTIFIER IS NULL .)
+
+
+state 100
+
+    (29) select_opt_where -> WHERE IDENTIFIER IS NOT NULL .
+    ;               reduce using rule 29 (select_opt_where -> WHERE IDENTIFIER IS NOT NULL .)

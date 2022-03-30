@@ -10,9 +10,10 @@ class MyParser(Parser):
     # def select(self, p):
     #     return p.expr + p.term
 
+    start = 'start1'
     # start - query_list
     @_('query_list')
-    def start(self,p):
+    def start1(self,p):
         return
 
     # query_list - query query_list
@@ -49,11 +50,11 @@ class MyParser(Parser):
     def insert_col_list(self, p):
         return
 
-    @_('val_list COMMA val')
+    @_('val_list COMMA value')
     def val_list(self, p):
         return
 
-    @_('val')
+    @_('value')
     def val_list(self, p):
         return
     # --------------- INSERT STATEMENT ---------------
@@ -66,11 +67,11 @@ class MyParser(Parser):
 
     @_('DISTINCT')
     def is_distinct(self, p):
-        return 1
+        return
 
     @_('')
     def is_distinct(self, p):
-        return 0
+        return
 
     @_('select_col_list')
     def select_param(self, p):
@@ -150,15 +151,15 @@ class MyParser(Parser):
 
     @_('ORDER BY ASC')
     def sort_order(self, p):
-        return 0
+        return
 
     @_('ORDER BY DESC')
     def sort_order(self, p):
-        return 1
+        return
 
     @_('')
     def sort_order(self, p):
-        return 0
+        return
 
     @_('LIMIT INTNUM OFFSET INTMUM')
     def opt_limit(self, p):
@@ -195,7 +196,7 @@ class MyParser(Parser):
     # --------------- UPDATE STATEMENT ---------------
     @_('IDENTIFIER EQUAL NUMS','IDENTIFIER GTEQ NUMS','IDENTIFIER LTEQ NUMS','IDENTIFIER GTOP NUMS','IDENTIFIER LTOP NUMS','IDENTIFIER NOTEQ NUMS')
     def condition(self, p):
-        return (p[1], p.IDENTIFIER, p.NUMS)
+        return
 
     @_('UPDATE table_name SET col_assigns select_opt_where SEMICOLON')
     def update_stmt(self, p):
@@ -219,22 +220,39 @@ class MyParser(Parser):
 
     @_('IDENTIFIER')
     def item(self, p):
-        return p.IDENTIFIER
+        return
 
     @_('empty')
     def query(self,p):
         return
     # --------------- UPDATE STATEMENT ---------------
 
+    @_('')
+    def empty(self,p):
+        pass
+
+    def error(self, p):
+        if p:
+            print("Syntax error at token", p.type)
+            # Just discard the token and tell the parser it's okay.
+            # self.errok()
+        else:
+            print("Syntax error at EOF")
+
 
 if __name__ == '__main__':
     lexer = MyLexer()
     parser = MyParser()
 
-    while True:
-        try:
-            text = input(' Input > ')
-            result = parser.parse(lexer.tokenize(text))
-            print(result)
-        except EOFError:
-            break
+    # while True:
+    try:
+        # text = input(' Input > ')
+        text = '''INSERT INTO Githin (10);'''
+        selectText = '''SELECT * FROM TAasasfBLE;'''
+        deleteText = '''DELETE FROM TAEEE'''
+        tokenTester = '''
+        INSERT INTO GG (col1,col2,col3,col4) (10,20,30,40,50)'''
+        result = parser.parse(lexer.tokenize(tokenTester))
+        print(result)
+    except EOFError:
+        print("EOF Error")
