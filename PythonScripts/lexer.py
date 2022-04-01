@@ -241,7 +241,10 @@ class MyLexer(Lexer):
 
     INTNUM = r'\d+'
     REALNUM = r'\d+.\d+'
-    STRING = r'\'(\s|\S)+\''
+    # Should String Have New Line OR NOT..? Problematic
+    # \'.*\' matches longest so in between thing cannot be \' .......That's all
+    STRING = r'\'([ \t\n\r\f\v]|[^ \'\t\n\r\f\v])+\''
+    # STRING = r'\'.*\''
     # @_(r'''("[^"\\]*(\\.[^"\\]*)*"|'[^'\\]*(\\.[^'\\]*)*')''')
 
     ignore = r'\t '
