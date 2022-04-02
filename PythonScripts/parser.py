@@ -67,6 +67,7 @@ class Query():
         # For Select Parameter -> selecting certain columns
         print("col list "+str(self.ColumnList))
         if("*" in self.ColumnList):
+            print("project parameter empty")
             return ""
         else:
             pairs = []
@@ -241,6 +242,7 @@ class MyParser(Parser):
     @_('MULOP')
     def select_param(self, p):
         # Whether it is an aggregate function or not
+        Q.addToColumnList('*')
         Q.Specs["is_aggr"]=0
         return
 
@@ -480,7 +482,7 @@ if __name__ == '__main__':
         updateTester = '''
         UPDATE Customers
         SET ContactName='Juan',jj='sine' WHERE Country<'Mexico';'''
-        result = parser.parse(lexer.tokenize(updateTester))
+        result = parser.parse(lexer.tokenize(selectText))
         print(result[1][0])
     except EOFError:
         print("EOF Error")
