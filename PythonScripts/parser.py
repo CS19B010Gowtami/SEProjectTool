@@ -2,13 +2,15 @@ from sly import Parser
 from lexer import MyLexer
 
 
-list_of_op = ['=','<','<=','>','>=','<>']
-list_of_logicOp = ['AND','OR','NOT']
+
 
 class Query():
     # Specs = {}
     # ColumnList = []
     # ValueList = []
+    list_of_op = ['=','<','<=','>','>=','<>']
+    list_of_logicOp = ['and','or','not']
+    
     def __init__(self):
         self.Specs = {}
         self.ColumnList = []
@@ -34,10 +36,33 @@ class Query():
     def addToValueList(self, value):
         self.ValueList.append(value)
 
-    def createQueryParameter(self):
+    def createQueryBaseCase(self,tup):
+        if(tup[0] == '='):
+            return "{\"" + tup[1] + "\" :" + str(tup[2]) + "}"
+        elif(tup[0] == '<'):
+            return "{\"" + tup[1] + "\" : { \"$lt\" :" + str(tup[2]) + "}" + "}"
+        elif(tup[0] == '<='):
+            return "{\"" + tup[1] + "\" : { \"$lte\" :" + str(tup[2]) +"}" + "}"
+        elif(tup[0] == '>'):
+            return "{\"" + tup[1] + "\" : { \"$gt\" :" + str(tup[2]) + "}" + "}"
+        elif(tup[0] == '>='):
+            return "{\"" + tup[1] + "\" : { \"$gte\" :" + str(tup[2]) + "}" + "}"
+        elif(tup[0] == '<>'):
+            return "{\"" + tup[1] + "\" : { \"$ne\" :" + str(tup[2]) + "}" + "}"
+        
+    def createQueryParameter(self,cond_tree):
         # For Where Clause and stuff
-        return
-
+        if(cond_tree== ''):
+            return "\{\}"
+        
+        if(cond_tree[0] in self.list_of_op):
+            # base case
+            return self.createQueryBaseCase(cond_tree)
+        elif(cond_tree[0] in self.list_of_logicOp):
+            q1 = self.createQueryParameter(cond_tree[1])
+            q2 = self.createQueryParameter(cond_tree[2])
+            return "{ $"+cond_tree[0]+ " : [" + q1 + ',' + q2 + ']'
+        return '\{\}'
     def createProjectParameter(self):
         # For Select Parameter -> selecting certain columns
 
@@ -77,9 +102,13 @@ class Query():
             print()
         elif(obj['type']=='select'):
             project_param = self.createProjectParameter()
-            query_param = self.createQueryParameter()
-            print()
-        return 'GG'
+            query_param = self.createQueryParameter(obj['select_cond_tree'])
+            if(obj['is_aggr'] == 0):
+                if(project_param!= ''):
+                    return "db." + obj['table_name'] + ".find(" + query_param + ')'
+                else:
+                    return "db." + obj['table_name'] + ".find(" + query_param +',' + project_param + ')'
+        return ''
 Q = Query()
 list_of_queries = []
 
@@ -283,15 +312,15 @@ class MyParser(Parser):
 
     @_('NOT condition_list')
     def condition_list(self, p):
-        return ('NOT',p[1])
+        return ('not',p[1])
 
     @_('condition_list AND condition_list')
     def condition_list(self, p):
-        return ('AND',p[0],p[2])
+        return ('and',p[0],p[2])
 
     @_('condition_list OR condition_list')
     def condition_list(self, p):
-        return ('OR',p[0],p[2])
+        return ('or',p[0],p[2])
 
 
     @_('condition')
