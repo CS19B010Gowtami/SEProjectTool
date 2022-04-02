@@ -19,8 +19,8 @@ class Query():
     # def convertCode()
     def debugStructure(self):
         print(self.Specs)
-        print(self.ValueList)
         print(self.ColumnList)
+        print(self.ValueList)
 
     def clearStructure(self):
         self.Specs.clear()
@@ -87,11 +87,20 @@ class Query():
             pairs.append(f'\"{col}\":{val}')
         s = ',\n'
         s = s.join(pairs)
+        print ("insert parameter"+'{' + s + '}')
         return '{' + s + '}'
 
     def createUpdateParameter(self):
         # For Update Parameter
-        return
+        if(len(self.ColumnList)!=len(self.ValueList)):
+            return "Error! Query is Wrong.. non-matching length of columns and values"
+        pairs = []
+        for col,val in zip(self.ColumnList,self.ValueList):    
+            pairs.append(f'\"{col}\":{val}')
+        s = ',\n'
+        s = s.join(pairs)
+        print ("update parameter-"+'{$set:{' + s + '},{multi:true}}')
+        return '{$set:{' + s + '},{multi:true}}'
     
     def createAggregateParameter(self):
         # For Things like sum avg etc..
@@ -107,6 +116,8 @@ class Query():
             insert_param = self.createInsertParameter()
             return "db." + obj['table_name'] + ".insert(" + insert_param + ')'
         elif(obj['type'] == 'update'):
+            update_param = self.createUpdateParameter()
+            # return "db." + obj['table_name'] + ".update(" + update_param + ')'
             print()
         elif(obj['type']== 'delete'):
             print()
@@ -469,7 +480,7 @@ if __name__ == '__main__':
         updateTester = '''
         UPDATE Customers
         SET ContactName='Juan',jj='sine' WHERE Country<'Mexico';'''
-        result = parser.parse(lexer.tokenize(selectText))
+        result = parser.parse(lexer.tokenize(updateTester))
         print(result[1][0])
     except EOFError:
         print("EOF Error")
