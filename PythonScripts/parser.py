@@ -65,8 +65,18 @@ class Query():
         return '\{\}'
     def createProjectParameter(self):
         # For Select Parameter -> selecting certain columns
-
-        return
+        print("col list "+str(self.ColumnList))
+        if("*" in self.ColumnList):
+            return ""
+        else:
+            pairs = []
+            for col in self.ColumnList:
+                pairs.append(f'\"{col}\":{1}')
+            pairs.append(f'\"_id\":{1}')
+            s = ',\n'
+            s = s.join(pairs)
+            print("project parameter"+'{' + s + '}')
+            return '{' + s + '}'
     
     def createInsertParameter(self):
         # For insert statement
