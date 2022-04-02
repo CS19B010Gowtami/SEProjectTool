@@ -1,7 +1,9 @@
-import re
-from numpy import sort
 from sly import Parser
 from lexer import MyLexer
+
+
+list_of_op = ['=','<','<=','>','>=','<>']
+list_of_logicOp = ['AND','OR','NOT']
 
 class Query():
     # Specs = {}
@@ -33,11 +35,54 @@ class Query():
         self.ValueList.append(value)
 
     def createQueryParameter(self):
+        # For Where Clause and stuff
         return
 
-    def projectParameter(self):
+    def createProjectParameter(self):
+        # For Select Parameter -> selecting certain columns
+
         return
+    
+    def createInsertParameter(self):
+        # For insert statement
+        if(len(self.ColumnList)!=len(self.ValueList)):
+            return "Error! Query is Wrong.. Either duplicate column or non-matching length of columns and values"
+        pairs = []
+        for col,val in zip(self.ColumnList,self.ValueList):    
+            pairs.append(f'\"{col}\":{val}')
+        s = ',\n'
+        s = s.join(pairs)
+        return '{' + s + '}'
+
+    def createUpdateParameter(self):
+        # For Update Parameter
+        return
+    
+    def createAggregateParameter(self):
+        # For Things like sum avg etc..
+        # Dont know scope
+        return
+
+    def convertStructToCode(self):
+        obj = self.Specs
+        if('type' not in obj):
+            return 'Error!! Query is Wrong'
+
+        if(obj['type'] == 'insert'):
+            insert_param = self.createInsertParameter()
+            return "db." + obj['table_name'] + ".insert(" + insert_param + ')'
+        elif(obj['type'] == 'update'):
+            print()
+        elif(obj['type']== 'delete'):
+            print()
+        elif(obj['type']=='select'):
+            project_param = self.createProjectParameter()
+            query_param = self.createQueryParameter()
+            print()
+        return 'GG'
 Q = Query()
+list_of_queries = []
+
 class MyParser(Parser):
     tokens = MyLexer.tokens
 
@@ -46,19 +91,19 @@ class MyParser(Parser):
        ('left', "AND"),
        ('left', "NOT"),
     )
-
     start = 'start1'
     
     # start - query_list
     @_('query_list')
     def start1(self,p):
-        return p[0]
+        return (p[0],list_of_queries)
 
     # query_list - query query_list
     @_('query query_list')
     def query_list(self,p):
         # Q.convertCode()
         Q.debugStructure()
+        list_of_queries.append(Q.convertStructToCode())
         Q.clearStructure()
         return p[0]
 
@@ -224,13 +269,13 @@ class MyParser(Parser):
     def select_opt_where(self,p):
         return p[1]
 
-    @_('WHERE IDENTIFIER IS NULL')
-    def select_opt_where(self, p):
-        return
+    @_('IDENTIFIER IS NULL')
+    def condition(self, p):
+        return ('=',p[0],'')
 
-    @_('WHERE IDENTIFIER IS NOT NULL')
-    def select_opt_where(self, p):
-        return 
+    @_('IDENTIFIER IS NOT NULL')
+    def condition(self, p):
+        return ('<>',p[0],'')
 
     @_('')
     def select_opt_where(self,p):
@@ -256,7 +301,7 @@ class MyParser(Parser):
     @_('IDENTIFIER EQUAL value','IDENTIFIER GTEQ value','IDENTIFIER LTEQ value','IDENTIFIER GTOP value','IDENTIFIER LTOP value','IDENTIFIER NOTEQ value')
     def condition(self, p):
         # print(p[0],p[1],p[2])
-        return (p[0],p[1],p[2])
+        return (p[1],p[0],p[2])
 
     @_('LCB condition_list RCB')
     def condition(self,p):
@@ -345,7 +390,7 @@ class MyParser(Parser):
     def column_name(self, p):
         return p[0]
 
-    @_('INTNUM','REALNUM','STRING')
+    @_('INTNUM','REALNUM')
     def value(self, p):
         # Q.addToValueList(p[0])
         # print("One val Printed", p[0])
@@ -356,6 +401,10 @@ class MyParser(Parser):
         # except ValueError:
         #     print("PROBLEM")
         return p[0]
+    
+    @_('STRING')
+    def value(self,p):
+        return "\"" + p[0] + "\""
     # --------------- UPDATE STATEMENT ---------------
 
     def error(self, p):
@@ -374,15 +423,16 @@ if __name__ == '__main__':
     # while True:
     try:
         # text = input(' Input > ')
-        selectText = '''SELECT abc,cde AS kek FROM TAasasfBLE WHERE KEK > 10 OR top > 50 AND somee =10 ;'''
+        selectText = '''SELECT abc,cde AS aliases FROM Something WHERE KEKE > 10 OR Top > 50 AND (somee =10 OR kake = 2000);'''
         deleteText = '''DELETE FROM TAEEE;'''
         tokenTester = '''
-        INSERT INTO GG (col1,col2,col3,col4,col4) VALUES (10,20,30,40,50);'''
+        INSERT INTO GG (col1,col2,col3,col4,col5) VALUES (10,'asfasfasf',30,40,50);'''
         updateTester = '''
         UPDATE Customers
-        SET ContactName='Juan' WHERE Country='Mexico';'''
+        SET ContactName='Juan',jj='sine' WHERE Country<'Mexico';'''
         result = parser.parse(lexer.tokenize(selectText))
-        print(result)
+        print(result[1][0])
     except EOFError:
         print("EOF Error")
+
 
