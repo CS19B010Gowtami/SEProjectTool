@@ -1,9 +1,6 @@
 from sly import Parser
 from lexer import MyLexer
 
-
-
-
 class Query():
     # Specs = {}
     # ColumnList = []
