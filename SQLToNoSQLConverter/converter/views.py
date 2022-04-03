@@ -1,10 +1,10 @@
+import re
 from django.shortcuts import render
 # from lexer import MyLexer
 # from parser import MyParser
-
 from sly import Lexer
 from sly import Parser
-
+ERROR_GLOB = 0
 class MyLexer(Lexer):
     # these are set of tokens that are to be exported to the parser
     tokens = {
@@ -330,9 +330,9 @@ class Query():
         print(self.ValueList)
 
     def clearStructure(self):
-        self.Specs.clear()
-        self.ColumnList.clear()
-        self.ValueList.clear()
+        self.Specs = {}
+        self.ColumnList = []
+        self.ValueList = []
 
     def addToColumnList(self, column_name):
         # check for duplicates
@@ -360,7 +360,7 @@ class Query():
     def createQueryParameter(self, cond_tree):
         # For Where Clause and stuff
         if (cond_tree == ''):
-            return "\{\}"
+            return '{' + '}'
 
         if (cond_tree[0] in self.list_of_op):
             # base case
@@ -368,21 +368,21 @@ class Query():
         elif (cond_tree[0] in self.list_of_logicOp):
             q1 = self.createQueryParameter(cond_tree[1])
             q2 = self.createQueryParameter(cond_tree[2])
-            return "{ $" + cond_tree[0] + " : [" + q1 + ',' + q2 + ']'
-        return '\{\}'
+            return "{ $" + cond_tree[0] + " : [" + q1 + ',' + q2 + ']}' 
+        return '{' + '}'
 
     def createProjectParameter(self):
         # For Select Parameter -> selecting certain columns
         print("col list " + str(self.ColumnList))
         if ("*" in self.ColumnList):
             print("project parameter empty")
-            return ""
+            return ''
         else:
             pairs = []
             for col in self.ColumnList:
                 pairs.append(f'\"{col}\":{1}')
             pairs.append(f'\"_id\":{1}')
-            s = ',\n'
+            s = ','
             s = s.join(pairs)
             print("project parameter" + '{' + s + '}')
             return '{' + s + '}'
@@ -394,7 +394,7 @@ class Query():
         pairs = []
         for col, val in zip(self.ColumnList, self.ValueList):
             pairs.append(f'\"{col}\":{val}')
-        s = ',\n'
+        s = ','
         s = s.join(pairs)
         print("insert parameter" + '{' + s + '}')
         return '{' + s + '}'
@@ -406,10 +406,10 @@ class Query():
         pairs = []
         for col, val in zip(self.ColumnList, self.ValueList):
             pairs.append(f'\"{col}\":{val}')
-        s = ',\n'
+        s = ','
         s = s.join(pairs)
-        print("update parameter-" + '{$set:{' + s + '},{multi:true}}')
-        return '{$set:{' + s + '},{multi:true}}'
+        # print("update parameter-" + '{$set:{' + s + '},' + '{' + "multi:true" +'}' + '}'
+        return '{$set:{' + s + '},' + '{' + "multi:true" +'}' + '}'
 
     def createAggregateParameter(self):
         # For Things like sum avg etc..
@@ -426,15 +426,18 @@ class Query():
             return "db." + obj['table_name'] + ".insert(" + insert_param + ')'
         elif (obj['type'] == 'update'):
             update_param = self.createUpdateParameter()
-            # return "db." + obj['table_name'] + ".update(" + update_param + ')'
-            print()
+            query_param = self.createQueryParameter(obj['update_cond_tree'])
+            return "db." + obj['table_name'] + ".updateMany(" + query_param + ',' + update_param + ')'
         elif (obj['type'] == 'delete'):
-            print()
+            query_param = self.createQueryParameter(obj['delete_cond_tree'])
+            return "db." + obj['table_name'] + ".remove(" + query_param + ')'
         elif (obj['type'] == 'select'):
             project_param = self.createProjectParameter()
             query_param = self.createQueryParameter(obj['select_cond_tree'])
+            # print(project_param)
+            # print(query_param)
             if (obj['is_aggr'] == 0):
-                if (project_param != ''):
+                if (not project_param):
                     return "db." + obj['table_name'] + ".find(" + query_param + ')'
                 else:
                     return "db." + obj['table_name'] + ".find(" + query_param + ',' + project_param + ')'
@@ -774,20 +777,24 @@ class MyParser(Parser):
             print("Syntax error at token", p.type, p.value)
             # Just discard the token and tell the parser it's okay.
             # self.errok()
+            ERROR_GLOB = 1
         else:
             print("Syntax error at EOF")
+
 # Create your views here.
 def frontend(request):
     query=""
     input = ""
     if 'clear' in request.POST:
-        return render(request, 'index.html', {'querystr':query,'value':query})
+        return render(request, 'index.html', {'querystr':"",'value':""})
     if request.POST.get('query'):
         query = request.POST.get('query')
+        print("query is ", query)
         input = query
+    list_of_queries.clear()
     lex = MyLexer()
     par = MyParser()
-
+    print(input)
     # while True:
     try:
         # text = input(' Input > ')
@@ -798,9 +805,19 @@ def frontend(request):
         updateTester = '''
         UPDATE Customers
         SET ContactName='Juan',jj='sine' WHERE Country<'Mexico';'''
-        result = par.parse(lex.tokenize(query))
-        print(result[1][0])
-        query = result[1][0]
+        someString = '''
+        SELECT a,b,c FROM TAB2 WHERE a=1,b=2,c=3;'''
+        Q.clearStructure()
+        ERROR_GLOB = 0
+        result = par.parse(lex.tokenize(input))
+        print(result)
+        try:
+            if(ERROR_GLOB == 1):
+                query = input + '\n\n\n' + 'The given query is unsupported or wrong'
+            print(list_of_queries)
+            query = list_of_queries[0]
+        except:
+            pass
     except EOFError:
         print("EOF Error")
     return render(request, 'index.html', {'querystr':input,'value':query})
