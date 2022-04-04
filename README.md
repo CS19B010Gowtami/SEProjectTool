@@ -1,11 +1,11 @@
 # SEProjectTool
-Description:
+### Description:
 	A tool that translates MySQL queries into NoSQL queries. The tool will be a web page with a text box to type queries to be converted. Users can also upload files that they want to convert from MySQL to NoSQL.
 
-Existing Works:
+### Existing Works:
 	There are some existing tools that work only for simple SQL commands. They will not give correct results for nested queries or special operations like UNION, TABLE JOIN or even little complicated select statements.
 
-How is our tool different from the existing ones:
+### How is our tool different from the existing ones:
 	We will try to make our tool to be able to convert some of the special operations and nested queries correctly with appropriate code/comment padding in some certain language (like python or JS) that describes the unsupported operations.
 
 # Running The Tool
