@@ -10,7 +10,7 @@ How is our tool different from the existing ones:
 
 # Running The Tool
 To run the tool locally on your system:
-1. clone the repository using git clone command
+1. Clone the repository using git clone command
 2. cd into 'SQLToNoSQLConverter' and then run 'python3 manage.py runserver <opt_port_number>'
 	eg : python3 manage.py runserver
 3. Now go to http://localhost:8000/converter/home to go to the tool interface
