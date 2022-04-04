@@ -8,7 +8,7 @@
 **How is our tool different from the existing ones:**
 	We will try to make our tool to be able to convert some of the special operations and nested queries correctly with appropriate code/comment padding in some certain language (like python or JS) that describes the unsupported operations.
 
-# Running The Tool
+## Running The Tool
 To run the tool locally on your system:
 1. Clone the repository using git clone command
 2. cd into 'SQLToNoSQLConverter' and then run 'python3 manage.py runserver <opt_port_number>'
