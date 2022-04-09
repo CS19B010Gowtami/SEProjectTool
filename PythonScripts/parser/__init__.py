@@ -212,7 +212,30 @@ class MyParser(Parser):
         return
     # --------------- INSERT STATEMENT ---------------
 
+    
+     # --------------- TABLE JOIN (self join , cross join , inner join , left join, right join, full outer join) ---------------
+    
+     @_('SELECT list FROM list joins IDENTIFIER opt_clause SEMICOLON')
+     def table_join(self, p):
+         return
+    @_('IDENTIFIER COMMA IDENTIFIER','IDENTIFIER')
+    def list(self, p):
+        return
 
+    @_('INNER JOIN','LEFT JOIN','RIGHT JOIN','CROSS JOIN','FULL OUTER JOIN')
+    def joins(self, p):
+        return 
+    @_('ON IDENTIFIER EQUAL IDENTIFIER' ,'empty','WHERE opt_condition','ON IDENTIFIER EQUAL IDENTIFIER WHERE opt_condition')
+    def opt_clause(self, p):
+        return
+    @_('IDENTIFIER EQUAL IDENTIFIER','condition')
+    def opt_condition(self, p):
+        return
+
+    @_('=')
+    def EQUAL(self, p):
+        return '='
+    
     # --------------- SELECT STATEMENT ---------------
     @_('SELECT is_distinct select_param FROM IDENTIFIER select_opt_where sort_order opt_limit')
     def select_stmt(self, p):
@@ -455,6 +478,8 @@ class MyParser(Parser):
     def value(self,p):
         return "\"" + p[0] + "\""
     # --------------- UPDATE STATEMENT ---------------
+
+
 
     def error(self, p):
         if p:

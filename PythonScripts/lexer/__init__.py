@@ -115,11 +115,12 @@ class MyLexer(Lexer):
         SOME,
         DESC,
         BOOL,
+        DOT,
         OFFSET
 	}
 
     # Identifiers and keywords
-    IDENTIFIER = r'[a-zA-Z_][a-zA-Z0-9_]*'
+    IDENTIFIER = r'[a-zA-Z_\.][a-zA-Z0-9_\.]*'
 
     IDENTIFIER['ADD'] = ADD
     IDENTIFIER['CONSTRAINT'] = CONSTRAINT
@@ -195,6 +196,7 @@ class MyLexer(Lexer):
 
     EQUAL = r'\='
     COMMA = r'\,'
+    DOT   = r'\.'
 
     # Arithmetic Assignment Operators
     ADDEQ = r'\+\='
