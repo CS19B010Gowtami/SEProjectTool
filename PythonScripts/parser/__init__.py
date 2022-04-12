@@ -212,7 +212,8 @@ class MyParser(Parser):
         return
     # --------------- INSERT STATEMENT ---------------
 
-    
+
+       
      # --------------- TABLE JOIN (self join , cross join , inner join , left join, right join, full outer join) ---------------
     
      @_('SELECT list FROM list joins IDENTIFIER opt_clause SEMICOLON')
@@ -225,9 +226,11 @@ class MyParser(Parser):
     @_('INNER JOIN','LEFT JOIN','RIGHT JOIN','CROSS JOIN','FULL OUTER JOIN')
     def joins(self, p):
         return 
+
     @_('ON IDENTIFIER EQUAL IDENTIFIER' ,'empty','WHERE opt_condition','ON IDENTIFIER EQUAL IDENTIFIER WHERE opt_condition')
     def opt_clause(self, p):
         return
+        
     @_('IDENTIFIER EQUAL IDENTIFIER','condition')
     def opt_condition(self, p):
         return
@@ -237,7 +240,7 @@ class MyParser(Parser):
         return '='
     
     # --------------- SELECT STATEMENT ---------------
-    @_('SELECT is_distinct select_param FROM IDENTIFIER select_opt_where sort_order opt_limit')
+    @_('SELECT is_distinct select_param FROM IDENTIFIER select_opt_where sort_order opt_limit SEMICOLON')
     def select_stmt(self, p):
         Q.Specs["table_name"]=p[4]
         Q.Specs["select_cond_tree"]=p[5]
@@ -370,14 +373,17 @@ class MyParser(Parser):
     def condition_list(self, p):
         return p[0]
 
-    @_('IDENTIFIER EQUAL value','IDENTIFIER GTEQ value','IDENTIFIER LTEQ value','IDENTIFIER GTOP value','IDENTIFIER LTOP value','IDENTIFIER NOTEQ value')
+    @_('IDENTIFIER EQUAL value','IDENTIFIER GTEQ value','IDENTIFIER LTEQ value','IDENTIFIER GTOP value','IDENTIFIER LTOP value','IDENTIFIER NOTEQ value','IDENTIFIER IN value','IDENTIFIER NOT IN value','IDENTIFIER EXISTS value','IDENTIFIER NOT EXISTS value','IDENTIFIER EQUAL IDENTIFIER')
     def condition(self, p):
         # print(p[0],p[1],p[2])
         return (p[1],p[0],p[2])
 
+
     @_('LCB condition_list RCB')
     def condition(self,p):
         return (p[1])
+
+    # condition can be a operator in case of nested queries
 
     @_('ORDER BY ASC')
     def sort_order(self, p):
@@ -461,6 +467,10 @@ class MyParser(Parser):
     @_('IDENTIFIER')
     def column_name(self, p):
         return p[0]
+
+    @_('LCB select_stmt RCB')
+    def value(self, p);
+        return
 
     @_('INTNUM','REALNUM')
     def value(self, p):
