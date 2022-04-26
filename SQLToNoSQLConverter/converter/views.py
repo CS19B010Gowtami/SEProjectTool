@@ -4,6 +4,7 @@ from django.shortcuts import render
 # from parser import MyParser
 from sly import Lexer
 from sly import Parser
+import sqlparse
 ERROR_GLOB = 0
 class MyLexer(Lexer):
     # these are set of tokens that are to be exported to the parser
@@ -380,12 +381,12 @@ class Query():
         else:
             pairs = []
             for col in self.ColumnList:
-                pairs.append(f'\"{col}\":{1}')
-            pairs.append(f'\"_id\":{1}')
-            s = ','
+                pairs.append(f'\t\t\"{col}\"  :  {1}')
+            pairs.append(f'\t\t\"_id\"  :  {1}')
+            s = ',\n'
             s = s.join(pairs)
             print("project parameter" + '{' + s + '}')
-            return '{' + s + '}'
+            return '\n\t{\n' + s + '\n\t}'
 
     def createInsertParameter(self):
         # For insert statement
@@ -393,11 +394,11 @@ class Query():
             return "Error! Query is Wrong.. Either duplicate column or non-matching length of columns and values"
         pairs = []
         for col, val in zip(self.ColumnList, self.ValueList):
-            pairs.append(f'\"{col}\":{val}')
-        s = ','
+            pairs.append(f'\t\t\"{col}\"  :  {val}')
+        s = ',\n'
         s = s.join(pairs)
         print("insert parameter" + '{' + s + '}')
-        return '{' + s + '}'
+        return '\n\t{\n' + s + '\n\t}'
 
     def createUpdateParameter(self):
         # For Update Parameter
@@ -405,11 +406,11 @@ class Query():
             return "Error! Query is Wrong.. non-matching length of columns and values"
         pairs = []
         for col, val in zip(self.ColumnList, self.ValueList):
-            pairs.append(f'\"{col}\":{val}')
-        s = ','
+            pairs.append(f'\t\t\"{col}\"  :  {val}')
+        s = ',\n'
         s = s.join(pairs)
         # print("update parameter-" + '{$set:{' + s + '},' + '{' + "multi:true" +'}' + '}'
-        return '{$set:{' + s + '},' + '{' + "multi:true" +'}' + '}'
+        return '{\n\t$set:{\n' + s + '\n\t},' + '\n\t{\n' + "\t\tmulti:true" +'\n\t}' + '\n}'
 
     def createAggregateParameter(self):
         # For Things like sum avg etc..
@@ -810,6 +811,7 @@ def frontend(request):
         Q.clearStructure()
         ERROR_GLOB = 0
         result = par.parse(lex.tokenize(input))
+        # result = sqlparse.format(result, reindent=True, keyword_case='upper')
         print(result)
         try:
             if(ERROR_GLOB == 1):
@@ -820,4 +822,5 @@ def frontend(request):
             pass
     except EOFError:
         print("EOF Error")
+    # ans = sqlparse.format(query, reindent=True, keyword_case='upper')
     return render(request, 'index.html', {'querystr':input,'value':query})
