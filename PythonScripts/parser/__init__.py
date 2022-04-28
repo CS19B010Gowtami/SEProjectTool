@@ -115,8 +115,8 @@ class Query():
             return "db." + obj['table_name'] + ".insert(" + insert_param + ')'
         elif(obj['type'] == 'update'):
             update_param = self.createUpdateParameter()
-            # return "db." + obj['table_name'] + ".update(" + update_param + ')'
             print()
+            return "db." + obj['table_name'] + ".update(" + update_param + ')'
         elif(obj['type']== 'delete'):
             print()
         elif(obj['type']=='select'):
@@ -214,11 +214,12 @@ class MyParser(Parser):
 
 
        
-     # --------------- TABLE JOIN (self join , cross join , inner join , left join, right join, full outer join) ---------------
+    # --------------- TABLE JOIN (self join , cross join , inner join , left join, right join, full outer join) ---------------
     
-     @_('SELECT list FROM list joins IDENTIFIER opt_clause SEMICOLON')
-     def table_join(self, p):
-         return
+    @_('SELECT list FROM list joins IDENTIFIER opt_clause SEMICOLON')
+    def table_join(self, p):
+        return
+
     @_('IDENTIFIER COMMA IDENTIFIER','IDENTIFIER')
     def list(self, p):
         return
@@ -469,7 +470,7 @@ class MyParser(Parser):
         return p[0]
 
     @_('LCB select_stmt RCB')
-    def value(self, p);
+    def value(self, p):
         return
 
     @_('INTNUM','REALNUM')

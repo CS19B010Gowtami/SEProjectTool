@@ -1,4 +1,6 @@
 import re
+from tokenize import tabsize
+from unicodedata import name
 from django.shortcuts import render
 # from lexer import MyLexer
 # from parser import MyParser
@@ -124,7 +126,7 @@ class MyLexer(Lexer):
     }
 
     # Identifiers and keywords
-    IDENTIFIER = r'[a-zA-Z_][a-zA-Z0-9_]*'
+    IDENTIFIER = r'[a-zA-Z_][a-zA-Z0-9_]*([.][a-zA-Z_][a-zA-Z0-9_]*)?'
 
     IDENTIFIER['ADD'] = ADD
     IDENTIFIER['CONSTRAINT'] = CONSTRAINT
@@ -254,6 +256,9 @@ class MyLexer(Lexer):
     ignore = r'\t '
 
     def IDENTIFIER(self, t):
+        print()
+        print("ID: ",t)
+        print()
         return t
 
     @_('TRUE')
@@ -311,6 +316,8 @@ class MyLexer(Lexer):
         print('Line %d: Bad Character -> %r' % (self.lineno, t.value[0]))
         self.index += 1
 
+ERROR_NO = 0
+
 
 class Query():
     # Specs = {}
@@ -323,23 +330,32 @@ class Query():
         self.Specs = {}
         self.ColumnList = []
         self.ValueList = []
+        self.TableList = []
 
     # def convertCode()
     def debugStructure(self):
         print(self.Specs)
         print(self.ColumnList)
         print(self.ValueList)
+        print(self.TableList)
 
     def clearStructure(self):
         self.Specs = {}
         self.ColumnList = []
         self.ValueList = []
+        self.TableList = []
 
     def addToColumnList(self, column_name):
         # check for duplicates
         if (column_name in self.ColumnList):
             return
         self.ColumnList.append(column_name)
+
+    def addToTableList(self, Table_name):
+        # check for duplicates
+        if (Table_name in self.TableList):
+            return
+        self.TableList.append(Table_name)
 
     def addToValueList(self, value):
         self.ValueList.append(value)
@@ -372,22 +388,109 @@ class Query():
             return "{ $" + cond_tree[0] + " : [" + q1 + ',' + q2 + ']}' 
         return '{' + '}'
 
-    def createProjectParameter(self):
+    def createPythonQueryBaseCase(self,tup):
+        temp = tup[1].split('.')
+        tab_name = temp[0]
+        # Make Necessary Changes to tab_name here
+        if (tup[0] == '='):
+            return tab_name + "." + temp[1] + " == " + tup[2]
+        elif (tup[0] == '<'):
+            return tab_name + "." + temp[1] + " < " + tup[2]
+        elif (tup[0] == '<='):
+            return tab_name + "." + temp[1] + " <= " + tup[2]
+        elif (tup[0] == '>'):
+            return tab_name + "." + temp[1] + " > " + tup[2]
+        elif (tup[0] == '>='):
+            return tab_name + "." + temp[1] + " >= " + tup[2]
+        elif (tup[0] == '<>'):
+            return tab_name + "." + temp[1] + " != " + tup[2]
+
+    def createPythonQuery(self,cond_tree):
+        if (cond_tree == ''):
+            return ''
+        
+        q1 = ''
+        q2 = ''
+        if (cond_tree[0] in self.list_of_op):
+            # base case
+            return self.createPythonQueryBaseCase(cond_tree)
+        elif (cond_tree[0] in self.list_of_logicOp):
+            q1 = self.createPythonQuery(cond_tree[1])
+            if(cond_tree[0] != 'not'):
+                q2 = self.createPythonQuery(cond_tree[2])
+            
+            if(cond_tree[0] == 'not'):
+                return "not (" + q1 + ")"
+            else:
+                return "(" + q1 + ") " + cond_tree[0] + " (" + q2 + ")"
+        return ''
+
+    def itemCheck(self,item):
+        if('.' not in item):
+            return False
+
+    def projectSplitter(self):
+        projectDict = {}
+        for item in self.TableList:
+            projectDict[item] = []
+        
+        for item in self.ColumnList:
+            temp = item.split('.')
+            projectDict[temp[0]].append(temp[1])
+        return projectDict
+
+    def createCrossProductCode(self,cond_tree):
+        code = ""
+        projecter = {}
+        if('*' not in self.ColumnList):
+            projecter = self.projectSplitter()
+        for item in self.TableList:
+            check = self.itemCheck(item)
+            projectParam = ''
+            if(item in projecter):
+                projectParam = self.createProjectParameter(projecter[item])
+            else:
+                continue
+            if(not check):
+                ERROR_NO = 1
+                return
+            if(projectParam == ""):
+                code += item + "Res = db." + item + ".find({" + "})\n\n" 
+            else:
+                code += item + "Res = db." + item + ".find({" + "}" + ',' + projectParam + ")\n\n" 
+        # Objs are [item]Res, [item1]Res etc...
+        tabSpace = '\n\t\t'
+        for i in range(0,len(self.TableList)-1):
+            # Objs are [itemi] and [itemi+1]
+            # Output Needed 
+            # mergeObji = []
+            # for item1 in tab1:
+                # for item2 in tab2:
+                    # mergeObji.append()
+            code += "\nmergeObj" + i + "=[]\nfor item1 in " + self.TableList[i] + ":\n\t" + "for item2 in " + self.TableList[i+1] + ":\n\t\t"
+            if(cond_tree != ''):
+                code +="if(" + self.createPythonQuery(cond_tree) + ")" + tabSpace + "\t"
+                tabSpace += '\t'
+            code += "item1.update(item2)" + tabSpace
+            code += "mergeObj"+i + ".append(item1)" + tabSpace
+        return code
+
+    def createProjectParameter(self,colList):
         # For Select Parameter -> selecting certain columns
-        print("col list " + str(self.ColumnList))
-        if ("*" in self.ColumnList):
+        print("col list " + str(colList))
+        if ("*" in colList):
             print("project parameter empty")
             return ''
-        else:
+        elif(len(colList) != 0):
             pairs = []
-            for col in self.ColumnList:
+            for col in colList:
                 pairs.append(f'\t\t\"{col}\"  :  {1}')
             pairs.append(f'\t\t\"_id\"  :  {1}')
             s = ',\n'
             s = s.join(pairs)
             print("project parameter" + '{' + s + '}')
             return '\n\t{\n' + s + '\n\t}'
-
+        return ''
     def createInsertParameter(self):
         # For insert statement
         if (len(self.ColumnList) != len(self.ValueList)):
@@ -411,6 +514,7 @@ class Query():
         s = s.join(pairs)
         # print("update parameter-" + '{$set:{' + s + '},' + '{' + "multi:true" +'}' + '}'
         return '{\n\t$set:{\n' + s + '\n\t},' + '\n\t{\n' + "\t\tmulti:true" +'\n\t}' + '\n}'
+    
 
     def createAggregateParameter(self):
         # For Things like sum avg etc..
@@ -433,22 +537,31 @@ class Query():
             query_param = self.createQueryParameter(obj['delete_cond_tree'])
             return "db." + obj['table_name'] + ".remove(" + query_param + ')'
         elif (obj['type'] == 'select'):
-            project_param = self.createProjectParameter()
+            project_param = self.createProjectParameter(self.ColumnList)
             query_param = self.createQueryParameter(obj['select_cond_tree'])
             # print(project_param)
             # print(query_param)
             if (obj['is_aggr'] == 0):
+                if(len(self.TableList) > 1):
+                    print()
+                    # Code To do Cross Product..!
+                    crossProductQuery = self.createCrossProductCode(obj['select_cond_tree']) 
                 if (not project_param):
                     return "db." + obj['table_name'] + ".find(" + query_param + ')'
                 else:
                     return "db." + obj['table_name'] + ".find(" + query_param + ',' + project_param + ')'
         return ''
 
-
 Q = Query()
 list_of_queries = []
 
+qObjList = []
 
+qObjList.append(Q)
+
+qStack = []
+
+# qStack.append(Q)
 class MyParser(Parser):
     tokens = MyLexer.tokens
 
@@ -485,7 +598,11 @@ class MyParser(Parser):
     def query(self, p):
         Q.Specs["type"] = "select"
         return "SELECT_STATEMENT"
-
+    
+    # @_('table_join SEMICOLON')
+    # def query(self,p):
+    #     return
+    
     @_('update_stmt SEMICOLON')
     def query(self, p):
         Q.Specs["type"] = "update"
@@ -531,11 +648,87 @@ class MyParser(Parser):
 
     # --------------- INSERT STATEMENT ---------------
 
+    # --------------- TABLE JOIN (self join , cross join , inner join , left join, right join, full outer join) ---------------
+    
+    # @_('SELECT select_col_list FROM IDENTIFIER join_list SEMICOLON')
+    # def opt_table_join(self, p):
+    #     return
+
+
+    # @_('SELECT select_col_list FROM IDENTIFIER join_list SEMICOLON')
+    # def opt_table_join(self, p):
+    #     return
+
+    @_('join_list joins IDENTIFIER')
+    def join_list(self, p):
+        Q.Specs["join"] = 1
+        # Set Error Code Here (Like...)
+        if("is_distinct" in Q.Specs and Q.Specs["is_distinct"] == 1):
+            ERROR_NO = 1
+        if("is_aggr" in Q.Specs and Q.Specs["is_aggr"] == 1):
+            ERROR_NO = 1
+        if( Q.Specs["select_cond_tree"] != ''):
+            ERROR_NO = 1
+
+        Q.Specs["join_ID_list"].append(p[2])
+        return
+    
+    @_('')
+    def join_list(self,p):
+        Q.Specs["join"] = 0
+        Q.Specs["join_type_list"] = []
+        Q.Specs["join_ID_list"] = []
+        return
+
+    @_('INNER JOIN','LEFT JOIN','RIGHT JOIN','FULL OUTER JOIN')
+    def joins(self, p):
+        Q.Specs["join_type_list"].append(p[0])
+        return 
+
+    # @_('ON IDENTIFIER EQUAL IDENTIFIER' ,'empty','WHERE opt_condition','ON IDENTIFIER EQUAL IDENTIFIER WHERE opt_condition')
+    # def opt_clause(self, p):
+    #     return
+        
+    # @_('IDENTIFIER EQUAL IDENTIFIER','condition')
+    # def opt_condition(self, p):
+    #     return
+
+    # @_('=')
+    # def EQUAL(self, p):
+    #     return '='
+    
+    # --------------- TABLE JOIN (self join , cross join , inner join , left join, right join, full outer join) ---------------
+
     # --------------- SELECT STATEMENT ---------------
-    @_('SELECT is_distinct select_param FROM IDENTIFIER select_opt_where sort_order opt_limit')
+    @_('SELECT is_distinct select_param FROM select_res select_opt_where sort_order opt_limit join_list')
     def select_stmt(self, p):
-        Q.Specs["table_name"] = p[4]
+        # Q.Specs["table_name"] = p[4]
         Q.Specs["select_cond_tree"] = p[5]
+        # Return if select is nest end or not.!
+        qObjList.append(Q)
+        if(qStack):
+            Q = qStack[-1]
+            qStack.pop()
+        return
+
+    @_('LCB select_stmt RCB')
+    def select_res(self,p):
+        qStack.append(Q)
+        Q = Query()
+        return
+
+    @_('select_table_list')
+    def select_res(self,p):
+        return
+
+    @_('IDENTIFIER')
+    def select_table_list(self,p):
+        Q.addToTableList(p[0])
+        return
+
+    @_('select_table_list COMMA IDENTIFIER')
+    def select_table_list(self,p):
+        Q.addToTableList(p[2])
         return
 
     @_('DISTINCT')
@@ -824,3 +1017,23 @@ def frontend(request):
         print("EOF Error")
     # ans = sqlparse.format(query, reindent=True, keyword_case='upper')
     return render(request, 'index.html', {'querystr':input,'value':query})
+
+if __name__ == '__main__':
+    lexer = MyLexer()
+    parser = MyParser()
+
+    # while True:
+    try:
+        # text = input(' Input > ')
+        selectText = '''SELECT abc,cde AS aliases FROM Something WHERE KEKE > 10 OR Top > 50 AND (somee =10 OR kake = 2000);'''
+        deleteText = '''DELETE FROM TAEEE;'''
+        tokenTester = '''
+        INSERT INTO GG (col1,col2,col3,col4,col5) VALUES (10,'asfasfasf',30,40,50);'''
+        updateTester = '''
+        UPDATE Customers
+        SET ContactName='Juan',jj='sine' WHERE Country<'Mexico';'''
+        result = parser.parse(lexer.tokenize(deleteText))
+        print(result[1][0])
+    except EOFError:
+        print("EOF Error")
+
