@@ -392,6 +392,7 @@ class Query():
         temp = tup[1].split('.')
         tab_name = temp[0]
         # Make Necessary Changes to tab_name here
+        # tab to item Converter
         if (tup[0] == '='):
             return tab_name + "." + temp[1] + " == " + tup[2]
         elif (tup[0] == '<'):
@@ -473,6 +474,7 @@ class Query():
                 tabSpace += '\t'
             code += "item1.update(item2)" + tabSpace
             code += "mergeObj"+i + ".append(item1)" + tabSpace
+            code += "#mergeObj" + i  + " will contain the result" + tabSpace
         return code
 
     def createProjectParameter(self,colList):
@@ -538,6 +540,9 @@ class Query():
             return "db." + obj['table_name'] + ".remove(" + query_param + ')'
         elif (obj['type'] == 'select'):
             project_param = self.createProjectParameter(self.ColumnList)
+            if(obj['join'] == 1):
+                # Code For Join and Return
+                print()
             query_param = self.createQueryParameter(obj['select_cond_tree'])
             # print(project_param)
             # print(query_param)
@@ -581,8 +586,13 @@ class MyParser(Parser):
     @_('query query_list')
     def query_list(self, p):
         # Q.convertCode()
+        finalCode = ''
         Q.debugStructure()
-        list_of_queries.append(Q.convertStructToCode())
+        if(len(qObjList) != 1):
+            finalCode = "finalObj = " + qObjList[-1].convertStructToCode()
+            
+        else:
+            list_of_queries.append(Q.convertStructToCode())
         Q.clearStructure()
         return p[0]
 
@@ -659,7 +669,7 @@ class MyParser(Parser):
     # def opt_table_join(self, p):
     #     return
 
-    @_('join_list joins IDENTIFIER')
+    @_('join_list joins IDENTIFIER opt_join_clause')
     def join_list(self, p):
         Q.Specs["join"] = 1
         # Set Error Code Here (Like...)
@@ -678,6 +688,7 @@ class MyParser(Parser):
         Q.Specs["join"] = 0
         Q.Specs["join_type_list"] = []
         Q.Specs["join_ID_list"] = []
+        Q.Specs["joining_list"] = []
         return
 
     @_('INNER JOIN','LEFT JOIN','RIGHT JOIN','FULL OUTER JOIN')
@@ -685,9 +696,16 @@ class MyParser(Parser):
         Q.Specs["join_type_list"].append(p[0])
         return 
 
-    # @_('ON IDENTIFIER EQUAL IDENTIFIER' ,'empty','WHERE opt_condition','ON IDENTIFIER EQUAL IDENTIFIER WHERE opt_condition')
-    # def opt_clause(self, p):
-    #     return
+    @_('ON IDENTIFIER EQUAL IDENTIFIER')
+    def opt_join_clause(self, p):
+        Q.Specs["joining_list"].append((p[1],p[3])) 
+        return
+    
+    @_('')
+    def opt_join_clause(self, p):
+        Q.Specs["joining_list"].append("") 
+        return
+    
         
     # @_('IDENTIFIER EQUAL IDENTIFIER','condition')
     # def opt_condition(self, p):
