@@ -402,17 +402,17 @@ class Query():
         # Make Necessary Changes to tab_name here
         # tab to item Converter
         if (tup[0] == '='):
-            return tab_name + "." + temp[1] + " == " + tup[2]
+            return tab_name + "." + temp[1] + " == " + str(tup[2])
         elif (tup[0] == '<'):
-            return tab_name + "." + temp[1] + " < " + tup[2]
+            return tab_name + "." + temp[1] + " < " + str(tup[2])
         elif (tup[0] == '<='):
-            return tab_name + "." + temp[1] + " <= " + tup[2]
+            return tab_name + "." + temp[1] + " <= " + str(tup[2])
         elif (tup[0] == '>'):
-            return tab_name + "." + temp[1] + " > " + tup[2]
+            return tab_name + "." + temp[1] + " > " + str(tup[2])
         elif (tup[0] == '>='):
-            return tab_name + "." + temp[1] + " >= " + tup[2]
+            return tab_name + "." + temp[1] + " >= " + str(tup[2])
         elif (tup[0] == '<>'):
-            return tab_name + "." + temp[1] + " != " + tup[2]
+            return tab_name + "." + temp[1] + " != " + str(tup[2])
 
     def createPythonQuery(self,cond_tree):
         if (cond_tree == ''):
@@ -434,9 +434,9 @@ class Query():
         return ''
 
     def itemCheck(self,item):
-        if('.' not in item):
-            return False
-        return True
+        if('.' in item):
+            return True
+        return False
     # select sf,asfafaf,asfa,sf from t1,t2;
     def projectSplitter(self):
         projectDict = {}
@@ -458,17 +458,20 @@ class Query():
             projectParam = ''
             if(item in projecter):
                 projectParam = self.createProjectParameter(projecter[item])
-            else:
-                continue
-            if(not check):
+            # else:
+            #     print("are we here")
+            #     continue
+            
+            if(check):
                 ERROR_NO = 1
                 return
-            if(projectParam == ""):
-                code += item + "Res = db." + item + ".find({" + "})\n\n" 
+            if(projectParam == ""):                    
+                code += item + "Res = db." + item + ".find({" + "})\n" 
             else:
-                code += item + "Res = db." + item + ".find({" + "}" + ',' + projectParam + ")\n\n" 
+                code += item + "Res = db." + item + ".find({" + "}" + ',' + projectParam + ")\n" 
         # Objs are [item]Res, [item1]Res etc...
         tabSpace = '\n\t\t'
+        code += "mergeObj0 = " + self.TableList[0] + "Res\n"
         for i in range(0,len(self.TableList)-1):
             # Objs are [itemi] and [itemi+1]
             # Output Needed 
@@ -476,13 +479,13 @@ class Query():
             # for item1 in tab1:
                 # for item2 in tab2:
                     # mergeObji.append()
-            code += "\nmergeObj" + i + "=[]\n"
-            code += "for item1 in " + self.TableList[i] + "Res:\n\t"
+            code += "mergeObj" + str(i+1) + "=[]\n"
+            code += "for item1 in mergeObj"  + str(i) + ":\n\t"
             code += "for item2 in " + self.TableList[i+1] + "Res:\n\t\t"
             code += "item1.update(item2)" + tabSpace
-            code += "mergeObj"+i + ".append(item1)" + tabSpace
-            code += "#mergeObj" + i  + " will contain the result\n"
-        code += "finalObj = mergeObj" + (len(self.TableList)-1) + "\n"
+            code += "mergeObj"+ str(i+1) + ".append(item1)" + tabSpace
+            code += "#mergeObj" + str(i+1) + " will contain the result\n"
+        code += "finalObj = mergeObj" + str(len(self.TableList)-1) + "\n"
         if(cond_tree != ''):
             code += "for item in finalObj:\n\t"
             code += "if(not (" + self.createPythonQuery(cond_tree) + ")):\n\t\t"
@@ -563,16 +566,16 @@ class Query():
                 else:
                     code += "res0 = db." + obj['table_name'] + ".find({" + "}," + project_param + ")\n"
                 for i in range(0,len(obj["join_ID_list"])):
-                    code += "obj"+ (i+1) + " = db." + obj["join_ID_list"][i] + ".find({" + "})\n"
+                    code += "obj"+ str(i+1) + " = db." + obj["join_ID_list"][i] + ".find({" + "})\n"
 
                 for i in range(0,len(obj["join_ID_list"])):
                     # Here i should do join based on ON condition and join type
-                    code += "res" + (i+1) + " = [" + "]\n"
-                    t1 = "res" + i
-                    t2 = "obj" + (i + 1)
+                    code += "res" + str(i+1) + " = [" + "]\n"
+                    t1 = "res" + str(i)
+                    t2 = "obj" + str(i + 1)
                     if(obj["join_type_list"][i] == 'RIGHT'):
-                        t1 = "obj" + (i + 1)
-                        t2 = "res" + i
+                        t1 = "obj" + str(i + 1)
+                        t2 = "res" + str(i)
                     code += "for item in "+ t1 + ":\n\t"
                     code += "matched = False\n\t"
                     code += "for item2 in " + t2 + ":\n\t\t"
@@ -581,7 +584,7 @@ class Query():
                         code += "d1 = item.copy()\n\t\t\t"
                         code += "d2 = item2.copy()\n\t\t\t"
                         code += "d2.update(d1)\n\t\t\t"
-                        code += "res" + (i+1) + ".append(d2)\n"
+                        code += "res" + str(i+1) + ".append(d2)\n"
 
                     elif(obj["join_type_list"][i] == 'LEFT'):
                         code += "if(item[\"" + obj["joining_list"][i][0] + "\"] == item2[\"" + obj["joining_list"][i][1] + "\"]):\n\t\t\t"
@@ -589,11 +592,11 @@ class Query():
                         code += "d2 = item2.copy()\n\t\t\t"
                         code += "d2.update(d1)\n\t\t\t"
                         code += "matched = True\n\t\t\t"
-                        code += "res" + (i+1) + ".append(d2)\n\t\t"
+                        code += "res" + str(i+1) + ".append(d2)\n\t"
                         # Checking for Mathced
                         code += "if(matched):\n\t\t\t"
                         code += "d3 = item.copy()\n\t\t\t"
-                        code += "res" + (i+1) + ".append(d3)\n"
+                        code += "res" + str(i+1) + ".append(d3)\n"
 
                     elif(obj["join_type_list"][i] == 'RIGHT'):
                         code += "if(item[\"" + obj["joining_list"][i][0] + "\"] == item2[\"" + obj["joining_list"][i][1] + "\"]):\n\t\t\t"
@@ -601,17 +604,17 @@ class Query():
                         code += "d2 = item2.copy()\n\t\t\t"
                         code += "d2.update(d1)\n\t\t\t"
                         code += "matched = True\n\t\t\t"
-                        code += "res" + (i+1) + ".append(d2)\n\t\t"
+                        code += "res" + str(i+1) + ".append(d2)\n\t"
                         # Checking for Mathced
                         code += "if(matched):\n\t\t\t"
                         code += "d3 = item.copy()\n\t\t\t"
-                        code += "res" + (i+1) + ".append(d3)\n"
+                        code += "res" + str(i+1) + ".append(d3)\n"
                         
                     elif(obj["join_type_list"][i] == 'FULL'):
                         # Cannot be joined
                         print()
                     print()
-                code += "resultSet = res" + len(obj["join_ID_list"]) + "\n"
+                code += "resultSet = res" + str(len(obj["join_ID_list"])) + "\n"
                 return code
 
             query_param = self.createQueryParameter(obj['select_cond_tree'])
@@ -622,6 +625,7 @@ class Query():
                     print()
                     # Code To do Cross Product..!
                     crossProductQuery = self.createCrossProductCode(obj['select_cond_tree']) 
+                    return crossProductQuery
                 if (not project_param):
                     return "db." + obj['table_name'] + ".find(" + query_param + ')'
                 else:
@@ -761,7 +765,7 @@ class MyParser(Parser):
             ERROR_NO = 1
         if("is_aggr" in Q.Specs and Q.Specs["is_aggr"] == 1):
             ERROR_NO = 1
-        if( Q.Specs["select_cond_tree"] != ''):
+        if("select_cond_tree" in Q.Specs and Q.Specs["select_cond_tree"] != ''):
             ERROR_NO = 1
         if("limit_value" in Q.Specs):
             ERROR_NO = 1
@@ -1137,7 +1141,9 @@ if __name__ == '__main__':
         updateTester = '''
         UPDATE Customers
         SET ContactName='Juan',jj='sine' WHERE Country<'Mexico';'''
-        result = parser.parse(lexer.tokenize(selectText))
+        joinText = '''SELECT * FROM T1 INNER JOIN T2 ON T1.col1 = T2.col2;'''
+        crossProductText = '''SELECT * FROM T1,T2;'''
+        result = parser.parse(lexer.tokenize(crossProductText))
         print(result)
     except EOFError:
         print("EOF Error")
