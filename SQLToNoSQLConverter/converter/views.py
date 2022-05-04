@@ -11,6 +11,7 @@ ERROR_GLOB = 0
 class MyLexer(Lexer):
     # these are set of tokens that are to be exported to the parser
     tokens = {
+        ON,
         SUM,
         COUNT,
         AVG,
@@ -199,6 +200,7 @@ class MyLexer(Lexer):
     IDENTIFIER['MIN'] = MIN
     IDENTIFIER['MAX'] = MAX
     IDENTIFIER['AVG'] = AVG
+    IDENTIFIER['ON'] = ON
 
     EQUAL = r'\='
     COMMA = r'\,'
@@ -524,6 +526,7 @@ class Query():
         return
 
     def convertStructToCode(self):
+        code = ''
         obj = self.Specs
         if ('type' not in obj):
             return 'Error!! Query is Wrong'
@@ -542,7 +545,39 @@ class Query():
             project_param = self.createProjectParameter(self.ColumnList)
             if(obj['join'] == 1):
                 # Code For Join and Return
-                print()
+                code += "resultSet = [" + "]\n"
+                if(not project_param):
+                    code += "res0 = db." + obj['table_name'] + ".find({" + "})\n"
+                else:
+                    code += "res0 = db." + obj['table_name'] + ".find({" + "}," + project_param + ")\n"
+                for i in range(0,len(obj["join_ID_list"])):
+                    code += "obj"+ (i+1) + " = db." + obj["join_ID_list"][i] + ".find({" + "})\n"
+
+                for i in range(0,len(obj["join_ID_list"])):
+                    # Here i should do join based on ON condition and join type
+                    code += "resultSet" + i + " = [" + "]\n"
+                    t1 = "res" + i
+                    t2 = "obj" + (i + 1)
+                    if(obj["join_type_list"][i] == 'RIGHT'):
+                        t1 = "obj" + (i + 1)
+                        t2 = "res" + i
+                    code += "for item in "+ t1 + ":\n\t"
+                    code += "for item2 in " + t2 + ":\n\t\t"
+                    if(obj["join_type_list"][i] == 'INNER'):
+                        code += "if(item[\"" + obj["joining_list"][i][0] + "\"] == item2[\"" + obj["joining_list"][i][1] + "\"]):\n\t\t\t"
+                        code += "d1 = item.copy()\n\t\t\t"
+                        code += "d2 = item2.copy()\n\t\t\t"
+                        code += "d2.update(d1)\n\t\t\t"
+                        code += "resultSet" + i + ".append(d2)\n\t\t\t"
+
+                        print()
+                    elif(obj["join_type_list"][i] == 'LEFT'):
+                        print()
+                    elif(obj["join_type_list"][i] == 'RIGHT'):
+                        print()
+                    elif(obj["join_type_list"][i] == 'FULL'):
+                        print()
+                    print()
             query_param = self.createQueryParameter(obj['select_cond_tree'])
             # print(project_param)
             # print(query_param)
@@ -590,7 +625,6 @@ class MyParser(Parser):
         Q.debugStructure()
         if(len(qObjList) != 1):
             finalCode = "finalObj = " + qObjList[-1].convertStructToCode()
-            
         else:
             list_of_queries.append(Q.convertStructToCode())
         Q.clearStructure()
@@ -679,6 +713,8 @@ class MyParser(Parser):
             ERROR_NO = 1
         if( Q.Specs["select_cond_tree"] != ''):
             ERROR_NO = 1
+        if("limit_value" in Q.Specs):
+            ERROR_NO = 1
 
         Q.Specs["join_ID_list"].append(p[2])
         return
@@ -701,10 +737,10 @@ class MyParser(Parser):
         Q.Specs["joining_list"].append((p[1],p[3])) 
         return
     
-    @_('')
-    def opt_join_clause(self, p):
-        Q.Specs["joining_list"].append("") 
-        return
+    # @_('')
+    # def opt_join_clause(self, p):
+    #     Q.Specs["joining_list"].append("") 
+    #     return
     
         
     # @_('IDENTIFIER EQUAL IDENTIFIER','condition')
@@ -897,7 +933,7 @@ class MyParser(Parser):
 
     @_('')
     def sort_order(self, p):
-        Q.Specs["sort_order"] = 0
+        Q.Specs["sort_order"] = -1
         return
 
     @_('LIMIT INTNUM opt_offset')
@@ -1009,16 +1045,16 @@ def frontend(request):
     print(input)
     # while True:
     try:
-        # text = input(' Input > ')
-        selectText = '''SELECT abc,cde AS aliases FROM Something WHERE KEKE > 10 OR Top > 50 AND (somee =10 OR kake = 2000);'''
-        deleteText = '''DELETE FROM TAEEE;'''
-        tokenTester = '''
-        INSERT INTO GG (col1,col2,col3,col4,col5) VALUES (10,'asfasfasf',30,40,50);'''
-        updateTester = '''
-        UPDATE Customers
-        SET ContactName='Juan',jj='sine' WHERE Country<'Mexico';'''
-        someString = '''
-        SELECT a,b,c FROM TAB2 WHERE a=1,b=2,c=3;'''
+        # # text = input(' Input > ')
+        # selectText = '''SELECT abc,cde AS aliases FROM Something WHERE KEKE > 10 OR Top > 50 AND (somee =10 OR kake = 2000);'''
+        # deleteText = '''DELETE FROM TAEEE;'''
+        # tokenTester = '''
+        # INSERT INTO GG (col1,col2,col3,col4,col5) VALUES (10,'asfasfasf',30,40,50);'''
+        # updateTester = '''
+        # UPDATE Customers
+        # SET ContactName='Juan',jj='sine' WHERE Country<'Mexico';'''
+        # someString = '''
+        # SELECT a,b,c FROM TAB2 WHERE a=1,b=2,c=3;'''
         Q.clearStructure()
         ERROR_GLOB = 0
         result = par.parse(lex.tokenize(input))
@@ -1027,6 +1063,7 @@ def frontend(request):
         try:
             if(ERROR_GLOB == 1):
                 query = input + '\n\n\n' + 'The given query is unsupported or wrong'
+                return render(request, 'index.html', {'querystr':input,'value':query})
             print(list_of_queries)
             query = list_of_queries[0]
         except:
