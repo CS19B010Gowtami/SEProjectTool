@@ -1,6 +1,3 @@
-import re
-from tokenize import tabsize
-from unicodedata import name
 from django.shortcuts import render
 # from lexer import MyLexer
 # from parser import MyParser
@@ -317,9 +314,7 @@ class MyLexer(Lexer):
     def error(self, t):
         print('Line %d: Bad Character -> %r' % (self.lineno, t.value[0]))
         self.index += 1
-
 ERROR_NO = 0
-
 
 class Query():
     # Specs = {}
@@ -327,6 +322,9 @@ class Query():
     # ValueList = []
     list_of_op = ['=', '<', '<=', '>', '>=', '<>']
     list_of_logicOp = ['and', 'or', 'not']
+
+    reverse_list_of_op = {'=' : '!=', '<': ">=", '<=' : ">", '>' : "<=", '>=' : '<', '<>' : "="}
+    reverse_list_of_logicOp = {'and' : 'or', 'or': 'and'}
 
     def __init__(self):
         self.Specs = {}
@@ -361,6 +359,14 @@ class Query():
 
     def addToValueList(self, value):
         self.ValueList.append(value)
+
+    # Solution for issue with NOT LOGICAL OPERATOR
+    def convertCondTree(self,tup,val):
+        if(tup[0] in self.list_of_op):
+            return (self.reverse_list_of_op[tup[0]],tup[1],tup[1])
+        elif(tup[0] in self.list_of_op):
+            return 
+        return
 
     def createQueryBaseCase(self, tup):
         if (tup[0] == '='):
@@ -421,7 +427,6 @@ class Query():
             q1 = self.createPythonQuery(cond_tree[1])
             if(cond_tree[0] != 'not'):
                 q2 = self.createPythonQuery(cond_tree[2])
-            
             if(cond_tree[0] == 'not'):
                 return "not (" + q1 + ")"
             else:
@@ -431,7 +436,8 @@ class Query():
     def itemCheck(self,item):
         if('.' not in item):
             return False
-
+        return True
+    # select sf,asfafaf,asfa,sf from t1,t2;
     def projectSplitter(self):
         projectDict = {}
         for item in self.TableList:
@@ -443,7 +449,7 @@ class Query():
         return projectDict
 
     def createCrossProductCode(self,cond_tree):
-        code = ""
+        code = "finalObj = []\n"
         projecter = {}
         if('*' not in self.ColumnList):
             projecter = self.projectSplitter()
@@ -470,13 +476,17 @@ class Query():
             # for item1 in tab1:
                 # for item2 in tab2:
                     # mergeObji.append()
-            code += "\nmergeObj" + i + "=[]\nfor item1 in " + self.TableList[i] + ":\n\t" + "for item2 in " + self.TableList[i+1] + ":\n\t\t"
-            if(cond_tree != ''):
-                code +="if(" + self.createPythonQuery(cond_tree) + ")" + tabSpace + "\t"
-                tabSpace += '\t'
+            code += "\nmergeObj" + i + "=[]\n"
+            code += "for item1 in " + self.TableList[i] + "Res:\n\t"
+            code += "for item2 in " + self.TableList[i+1] + "Res:\n\t\t"
             code += "item1.update(item2)" + tabSpace
             code += "mergeObj"+i + ".append(item1)" + tabSpace
-            code += "#mergeObj" + i  + " will contain the result" + tabSpace
+            code += "#mergeObj" + i  + " will contain the result\n"
+        code += "finalObj = mergeObj" + (len(self.TableList)-1) + "\n"
+        if(cond_tree != ''):
+            code += "for item in finalObj:\n\t"
+            code += "if(not (" + self.createPythonQuery(cond_tree) + ")):\n\t\t"
+            code += "finalObj.remove(item)\n"
         return code
 
     def createProjectParameter(self,colList):
@@ -495,6 +505,7 @@ class Query():
             print("project parameter" + '{' + s + '}')
             return '\n\t{\n' + s + '\n\t}'
         return ''
+        
     def createInsertParameter(self):
         # For insert statement
         if (len(self.ColumnList) != len(self.ValueList)):
@@ -543,6 +554,7 @@ class Query():
             return "db." + obj['table_name'] + ".remove(" + query_param + ')'
         elif (obj['type'] == 'select'):
             project_param = self.createProjectParameter(self.ColumnList)
+            
             if(obj['join'] == 1):
                 # Code For Join and Return
                 code += "resultSet = [" + "]\n"
@@ -555,29 +567,53 @@ class Query():
 
                 for i in range(0,len(obj["join_ID_list"])):
                     # Here i should do join based on ON condition and join type
-                    code += "resultSet" + i + " = [" + "]\n"
+                    code += "res" + (i+1) + " = [" + "]\n"
                     t1 = "res" + i
                     t2 = "obj" + (i + 1)
                     if(obj["join_type_list"][i] == 'RIGHT'):
                         t1 = "obj" + (i + 1)
                         t2 = "res" + i
                     code += "for item in "+ t1 + ":\n\t"
+                    code += "matched = False\n\t"
                     code += "for item2 in " + t2 + ":\n\t\t"
                     if(obj["join_type_list"][i] == 'INNER'):
                         code += "if(item[\"" + obj["joining_list"][i][0] + "\"] == item2[\"" + obj["joining_list"][i][1] + "\"]):\n\t\t\t"
                         code += "d1 = item.copy()\n\t\t\t"
                         code += "d2 = item2.copy()\n\t\t\t"
                         code += "d2.update(d1)\n\t\t\t"
-                        code += "resultSet" + i + ".append(d2)\n\t\t\t"
+                        code += "res" + (i+1) + ".append(d2)\n"
 
-                        print()
                     elif(obj["join_type_list"][i] == 'LEFT'):
-                        print()
+                        code += "if(item[\"" + obj["joining_list"][i][0] + "\"] == item2[\"" + obj["joining_list"][i][1] + "\"]):\n\t\t\t"
+                        code += "d1 = item.copy()\n\t\t\t"
+                        code += "d2 = item2.copy()\n\t\t\t"
+                        code += "d2.update(d1)\n\t\t\t"
+                        code += "matched = True\n\t\t\t"
+                        code += "res" + (i+1) + ".append(d2)\n\t\t"
+                        # Checking for Mathced
+                        code += "if(matched):\n\t\t\t"
+                        code += "d3 = item.copy()\n\t\t\t"
+                        code += "res" + (i+1) + ".append(d3)\n"
+
                     elif(obj["join_type_list"][i] == 'RIGHT'):
-                        print()
+                        code += "if(item[\"" + obj["joining_list"][i][0] + "\"] == item2[\"" + obj["joining_list"][i][1] + "\"]):\n\t\t\t"
+                        code += "d1 = item.copy()\n\t\t\t"
+                        code += "d2 = item2.copy()\n\t\t\t"
+                        code += "d2.update(d1)\n\t\t\t"
+                        code += "matched = True\n\t\t\t"
+                        code += "res" + (i+1) + ".append(d2)\n\t\t"
+                        # Checking for Mathced
+                        code += "if(matched):\n\t\t\t"
+                        code += "d3 = item.copy()\n\t\t\t"
+                        code += "res" + (i+1) + ".append(d3)\n"
+                        
                     elif(obj["join_type_list"][i] == 'FULL'):
+                        # Cannot be joined
                         print()
                     print()
+                code += "resultSet = res" + len(obj["join_ID_list"]) + "\n"
+                return code
+
             query_param = self.createQueryParameter(obj['select_cond_tree'])
             # print(project_param)
             # print(query_param)
@@ -591,6 +627,16 @@ class Query():
                 else:
                     return "db." + obj['table_name'] + ".find(" + query_param + ',' + project_param + ')'
         return ''
+
+# There won't be nested queries : 
+# reason -> we are not doing cross column querying between self and different tables..! 
+# eg : WHERE table.C1 = table2.C2 or table1.c1 = table1.c2
+# increases difficulty to a next level...! From a simple query to query 
+# transpiler to a query to PL transpiler....
+
+# If cross product is done now then only use is like 
+# eg: SELECT * FROM (SELECT * FROM T1 WHERE c1 = 10 and c2 = 20) WHERE C3 = 1
+# => SELECT * FROM T1 where c1 = 10 and c2 = 20 and C3 = 1
 
 Q = Query()
 list_of_queries = []
@@ -626,7 +672,8 @@ class MyParser(Parser):
         if(len(qObjList) != 1):
             finalCode = "finalObj = " + qObjList[-1].convertStructToCode()
         else:
-            list_of_queries.append(Q.convertStructToCode())
+            code = Q.convertStructToCode()
+            list_of_queries.append(code)
         Q.clearStructure()
         return p[0]
 
@@ -703,6 +750,9 @@ class MyParser(Parser):
     # def opt_table_join(self, p):
     #     return
 
+    # JOIN SYNTAX ___
+    # SELECT COl_list FROM TABLE JOIN_TYPE(LEFT JOIN,RIGHT,INNER) IDENTIFIER ON t1.c1 = t2.c2
+    # select * from t1 LEFT JOIN t2 on c1=c2 RIGHT JOIN t3 on c2 = c3
     @_('join_list joins IDENTIFIER opt_join_clause')
     def join_list(self, p):
         Q.Specs["join"] = 1
@@ -715,7 +765,6 @@ class MyParser(Parser):
             ERROR_NO = 1
         if("limit_value" in Q.Specs):
             ERROR_NO = 1
-
         Q.Specs["join_ID_list"].append(p[2])
         return
     
@@ -757,12 +806,12 @@ class MyParser(Parser):
     @_('SELECT is_distinct select_param FROM select_res select_opt_where sort_order opt_limit join_list')
     def select_stmt(self, p):
         # Q.Specs["table_name"] = p[4]
-        Q.Specs["select_cond_tree"] = p[5]
         # Return if select is nest end or not.!
-        qObjList.append(Q)
-        if(qStack):
-            Q = qStack[-1]
-            qStack.pop()
+        # if(qStack):
+        #     Q = qStack[-1]
+        #     qStack.pop()
+        # qObjList.append(Q)
+        Q.Specs["select_cond_tree"] = p[5]
         return
 
     @_('LCB select_stmt RCB')
@@ -777,6 +826,7 @@ class MyParser(Parser):
 
     @_('IDENTIFIER')
     def select_table_list(self,p):
+        Q.Specs["table_name"] = p[0]
         Q.addToTableList(p[0])
         return
 
@@ -1087,8 +1137,7 @@ if __name__ == '__main__':
         updateTester = '''
         UPDATE Customers
         SET ContactName='Juan',jj='sine' WHERE Country<'Mexico';'''
-        result = parser.parse(lexer.tokenize(deleteText))
-        print(result[1][0])
+        result = parser.parse(lexer.tokenize(selectText))
+        print(result)
     except EOFError:
         print("EOF Error")
-
