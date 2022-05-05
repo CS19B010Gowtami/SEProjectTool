@@ -1,0 +1,1 @@
+SELECT * FROM T1 WHERE NOT (col1 < 10 AND NOT(col2 = 20));

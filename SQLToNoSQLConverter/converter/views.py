@@ -1156,7 +1156,7 @@ if __name__ == '__main__':
         joinText = '''SELECT * FROM T1 INNER JOIN T2 ON T1.col1 = T2.col2;'''
         crossProductText = '''SELECT * FROM T1,T2;'''
         
-        notText = '''SELECT * FROM T1 WHERE NOT (col1 = 10 AND NOT(col2 = 20));'''
+        notText = '''SELECT * FROM T1 WHERE NOT (col1 < 10 AND NOT(col2 = 20));'''
         result = parser.parse(lexer.tokenize(notText))
         print(result)
     except EOFError:
