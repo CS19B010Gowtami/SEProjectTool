@@ -410,7 +410,7 @@ class Query():
 
     def createPythonQueryBaseCase(self,tup):
         temp = tup[1].split('.')
-        tab_name = temp[0]
+        tab_name = "finalObj"
         # Make Necessary Changes to tab_name here
         # tab to item Converter
         if (tup[0] == '='):
@@ -582,6 +582,8 @@ class Query():
 
                 for i in range(0,len(obj["join_ID_list"])):
                     # Here i should do join based on ON condition and join type
+                    param1 = obj["joining_list"][i][0].split('.')[1]
+                    param2 = obj["joining_list"][i][1].split('.')[1]
                     code += "res" + str(i+1) + " = [" + "]\n"
                     t1 = "res" + str(i)
                     t2 = "obj" + str(i + 1)
@@ -592,14 +594,14 @@ class Query():
                     code += "matched = False\n\t"
                     code += "for item2 in " + t2 + ":\n\t\t"
                     if(obj["join_type_list"][i] == 'INNER'):
-                        code += "if(item[\"" + obj["joining_list"][i][0] + "\"] == item2[\"" + obj["joining_list"][i][1] + "\"]):\n\t\t\t"
+                        code += "if(item[\"" + param1 + "\"] == item2[\"" + param2 + "\"]):\n\t\t\t"
                         code += "d1 = item.copy()\n\t\t\t"
                         code += "d2 = item2.copy()\n\t\t\t"
                         code += "d2.update(d1)\n\t\t\t"
                         code += "res" + str(i+1) + ".append(d2)\n"
 
                     elif(obj["join_type_list"][i] == 'LEFT'):
-                        code += "if(item[\"" + obj["joining_list"][i][0] + "\"] == item2[\"" + obj["joining_list"][i][1] + "\"]):\n\t\t\t"
+                        code += "if(item[\"" + param1 + "\"] == item2[\"" + param2 + "\"]):\n\t\t\t"
                         code += "d1 = item.copy()\n\t\t\t"
                         code += "d2 = item2.copy()\n\t\t\t"
                         code += "d2.update(d1)\n\t\t\t"
@@ -611,7 +613,7 @@ class Query():
                         code += "res" + str(i+1) + ".append(d3)\n"
 
                     elif(obj["join_type_list"][i] == 'RIGHT'):
-                        code += "if(item[\"" + obj["joining_list"][i][0] + "\"] == item2[\"" + obj["joining_list"][i][1] + "\"]):\n\t\t\t"
+                        code += "if(item[\"" + param1 + "\"] == item2[\"" + param2 + "\"]):\n\t\t\t"
                         code += "d1 = item.copy()\n\t\t\t"
                         code += "d2 = item2.copy()\n\t\t\t"
                         code += "d2.update(d1)\n\t\t\t"
