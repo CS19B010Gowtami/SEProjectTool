@@ -323,7 +323,7 @@ class Query():
     list_of_op = ['=', '<', '<=', '>', '>=', '<>']
     list_of_logicOp = ['and', 'or', 'not']
 
-    reverse_list_of_op = {'=' : '!=', '<': ">=", '<=' : ">", '>' : "<=", '>=' : '<', '<>' : "="}
+    reverse_list_of_op = {'=' : '<>', '<': ">=", '<=' : ">", '>' : "<=", '>=' : '<', '<>' : "="}
     reverse_list_of_logicOp = {'and' : 'or', 'or': 'and'}
 
     def __init__(self):
@@ -362,10 +362,21 @@ class Query():
 
     # Solution for issue with NOT LOGICAL OPERATOR
     def convertCondTree(self,tup,val):
+        if(tup[0] == 'not'):
+            if(val):
+                return self.convertCondTree(tup[1],False)
+            else:
+                return self.convertCondTree(tup[1],True)
         if(tup[0] in self.list_of_op):
-            return (self.reverse_list_of_op[tup[0]],tup[1],tup[1])
-        elif(tup[0] in self.list_of_op):
-            return 
+            if(val):
+                return (self.reverse_list_of_op[tup[0]],tup[1],tup[2])
+            else:
+                return (tup[0],tup[1],tup[2])          
+        elif(tup[0] in self.list_of_logicOp):
+            if(val):
+                return (self.reverse_list_of_logicOp[tup[0]],self.convertCondTree(tup[1],val),self.convertCondTree(tup[2],val))
+            else:
+                return (tup[0],self.convertCondTree(tup[1],val),self.convertCondTree(tup[2],val))
         return
 
     def createQueryBaseCase(self, tup):
@@ -386,7 +397,8 @@ class Query():
         # For Where Clause and stuff
         if (cond_tree == ''):
             return '{' + '}'
-
+        cond_tree = self.convertCondTree(cond_tree,False)
+        print("cond_tree is : ", cond_tree)
         if (cond_tree[0] in self.list_of_op):
             # base case
             return self.createQueryBaseCase(cond_tree)
@@ -1134,7 +1146,7 @@ if __name__ == '__main__':
     # while True:
     try:
         # text = input(' Input > ')
-        selectText = '''SELECT abc,cde AS aliases FROM Something WHERE KEKE > 10 OR Top > 50 AND (somee =10 OR kake = 2000);'''
+        selectText = '''SELECT abc,cde AS aliases FROM Something WHERE KEKE > 10 OR Top > 50 AND (somee = 'GG' OR kake = 2000);'''
         deleteText = '''DELETE FROM TAEEE;'''
         tokenTester = '''
         INSERT INTO GG (col1,col2,col3,col4,col5) VALUES (10,'asfasfasf',30,40,50);'''
@@ -1143,7 +1155,9 @@ if __name__ == '__main__':
         SET ContactName='Juan',jj='sine' WHERE Country<'Mexico';'''
         joinText = '''SELECT * FROM T1 INNER JOIN T2 ON T1.col1 = T2.col2;'''
         crossProductText = '''SELECT * FROM T1,T2;'''
-        result = parser.parse(lexer.tokenize(crossProductText))
+        
+        notText = '''SELECT * FROM T1 WHERE NOT (col1 = 10 AND NOT(col2 = 20));'''
+        result = parser.parse(lexer.tokenize(notText))
         print(result)
     except EOFError:
         print("EOF Error")
